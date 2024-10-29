@@ -2,14 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.objects;
+package com.deliveryexpress.sdeu.objects.orders;
 
 /**
  *
  * @author DeliveryExpress
  */
 
-import com.deliveryexpress.sdeu.objects.User.AccountType;
+import com.deliveryexpress.sdeu.objects.AccountType;
+import com.deliveryexpress.sdeu.objects.Bussines;
+import com.deliveryexpress.sdeu.objects.Customer;
+import com.deliveryexpress.sdeu.objects.Delivery;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,7 +26,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Stream;
 
 
 /**
@@ -122,15 +124,15 @@ public class Order {
   }
 
     public boolean isRecolectable() {
-    
-        if(this.getDelivery()!=null){
-        return false;
+        
+        if (this.getDelivery() != null) {
+            return false;
         }
         
-        if(!isReadyToTake()){
-        return false;
+        if (!isReadyToTake()) {
+            return false;
         }
-
+        
         return true;
     }
 
@@ -210,18 +212,12 @@ public class Order {
     }
 
     public void changeStatusByDelivery(String status) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+     
+        this.setStatus(status);
+    
     }
 
-  public static interface OrderStatus {
 
-    String PREPARANDO = "PREPARANDO";
-    String LISTO = "LISTO";
-    String EN_CAMINO = "EN_CAMINO";
-    String EN_DOMICILIO = "EN_DOMICILIO";
-    String ENTREGADO = "ENTREGADO";
-    String CANCELADO = "CANCELADO";
-  }
 
   // Getters y Setters para los campos JSON
   public Bussines getBussines() {

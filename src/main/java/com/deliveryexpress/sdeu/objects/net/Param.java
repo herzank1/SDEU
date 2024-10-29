@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.objects;
+package com.deliveryexpress.sdeu.objects.net;
 
 
 import java.awt.image.BufferedImage;
@@ -41,9 +41,7 @@ public class Param {
         this.values = values;
     }
 
-    public BufferedImage getBufferedImage() {
-        return GeneralUtils.byteArrayToBufferedImage(values);
-    }
+  
     
     public String getValueAsString() {
         return (String) this.value;

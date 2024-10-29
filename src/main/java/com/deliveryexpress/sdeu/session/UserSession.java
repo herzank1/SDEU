@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.objects;
+package com.deliveryexpress.sdeu.session;
 
+import com.deliveryexpress.sdeu.objects.User;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.Data;
  * @author HP
  */
 @Data
-public class Session{
+public class UserSession{
  
     
     @Expose
@@ -27,16 +28,16 @@ public class Session{
     
     
 
-    public Session() {
+    public UserSession() {
 
     }
     
         // Constructor que recibe un Object y lo convierte en Session
-    public Session(Object object) {
+    public UserSession(Object object) {
             Gson gson = new Gson();
             // Convertimos el objeto en un String JSON y luego lo deserializamos
             String json = gson.toJson(object);
-            Session session = gson.fromJson(json, Session.class);
+            UserSession session = gson.fromJson(json, UserSession.class);
 
             // Asignamos los valores deserializados a los atributos
             this.id = session.id;

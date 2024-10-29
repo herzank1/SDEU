@@ -14,44 +14,44 @@ import lombok.Data;
  *
  * @author HP
  */
-
 @Data
 @DatabaseTable(tableName = "users")
 public class User {
-    
+
     @DatabaseField(id = true)
     @Expose
     private String username;
-    
+
     @DatabaseField
-   @Expose
+    @Expose
     private String phone;
-  
+
     @DatabaseField
     @Expose
     private String pass;
-    
+
     @DatabaseField
     @Expose
-    
+
     private String accountType;
-    
+
     @DatabaseField
     @Expose
     private String accountId;
-    
+
     @DatabaseField
     @Expose
     private boolean blackList;
 
-    /***
-     * 
+    /**
+     * *
+     *
      * @param username
      * @param phone
      * @param pass
      * @param accountType
      * @param accountId
-     * @param blackList 
+     * @param blackList
      */
     public User(String username, String phone, String pass, String accountType, String accountId, boolean blackList) {
         this.username = username;
@@ -61,14 +61,14 @@ public class User {
         this.accountId = accountId;
         this.blackList = blackList;
     }
-    
-        // Constructor que recibe un objeto y lo convierte a JSON
+
+    // Constructor que recibe un objeto y lo convierte a JSON
     public User(Object obj) {
         // Usa Gson para convertir el objeto a JSON
         String json = new Gson().toJson(obj);
         // Deserializa el JSON a un objeto User
         User userFromJson = new Gson().fromJson(json, User.class);
-        
+
         // Asigna los valores a las variables de instancia
         this.username = userFromJson.username;
         this.phone = userFromJson.phone;
@@ -80,17 +80,5 @@ public class User {
 
     public User() {
     }
-    
-    
 
-   
-    public interface AccountType {
-
-        String CUSTOMER = "CUSTOMER";
-        String BUSSINES = "BUSSINES";
-        String DELIVERY = "DELIVERY";
-        String MODERATOR = "MODERATOR";
-    }
-    
-    
 }

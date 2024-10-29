@@ -1,4 +1,4 @@
-package com.deliveryexpress.sdeu.objects;
+package com.deliveryexpress.sdeu.main;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
