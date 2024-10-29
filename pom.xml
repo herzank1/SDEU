@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.deliveryexpress.sdeu</groupId>
     <artifactId>SDEU</artifactId>
-    <version>1.0.0.4</version>
+    <version>1.0.0.6</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,5 +46,5 @@
         <url>https://maven.pkg.github.com/herzank1/SDEU/</url>
     </repository>
 </distributionManagement>
-    <description>Shared Utilities for DeliveryExpress</description>
+    <description>Shared Utilities for DeliveryExpress</description> 
 </project>
