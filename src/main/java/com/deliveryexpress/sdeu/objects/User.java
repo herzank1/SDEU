@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package monge.sdeu.objects;
+package com.deliveryexpress.sdeu.objects;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -59,6 +60,22 @@ public class User {
         this.accountType = accountType;
         this.accountId = accountId;
         this.blackList = blackList;
+    }
+    
+        // Constructor que recibe un objeto y lo convierte a JSON
+    public User(Object obj) {
+        // Usa Gson para convertir el objeto a JSON
+        String json = new Gson().toJson(obj);
+        // Deserializa el JSON a un objeto User
+        User userFromJson = new Gson().fromJson(json, User.class);
+        
+        // Asigna los valores a las variables de instancia
+        this.username = userFromJson.username;
+        this.phone = userFromJson.phone;
+        this.pass = userFromJson.pass;
+        this.accountType = userFromJson.accountType;
+        this.accountId = userFromJson.accountId;
+        this.blackList = userFromJson.blackList;
     }
 
     public User() {

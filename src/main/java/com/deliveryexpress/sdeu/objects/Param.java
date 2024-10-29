@@ -2,12 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package monge.sdeu.objects;
+package com.deliveryexpress.sdeu.objects;
 
 
 import java.awt.image.BufferedImage;
 import lombok.Data;
-import monge.deliveryexpressadmin.utils.GeneralUtils;
+import com.deliveryexpress.sdeu.utils.GeneralUtils;
+
 
 /**
  *
@@ -51,5 +52,9 @@ public class Param {
     public boolean getValueAsBoolean() {
      return Boolean.parseBoolean(this.value.toString());
     
+    }
+
+    public float getAsFloat() {
+    return Float.parseFloat(this.value.toString());  
     }
 }

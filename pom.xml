@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.deliveryexpress.sdeu</groupId>
+    <artifactId>SDEU</artifactId>
+    <version>1.0.0.1</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <exec.mainClass>com.deliveryexpress.sdeu.objects.SDEU</exec.mainClass>
+    </properties>
+    
+    <dependencies>
+         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version> <!-- Cambia la versión si es necesario -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version> <!-- Cambia la versión si es necesario -->
+        </dependency>
+        
+          <!-- ORMLite Core -->
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-core</artifactId>
+            <version>6.1</version>
+        </dependency>
+
+        <!-- ORMLite JDBC -->
+        <dependency>
+            <groupId>com.j256.ormlite</groupId>
+            <artifactId>ormlite-jdbc</artifactId>
+            <version>6.1</version>
+        </dependency>
+    </dependencies>
+    
+      <distributionManagement>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/herzank1/SDEU/</url>
+    </repository>
+</distributionManagement>
+ 
+</project>

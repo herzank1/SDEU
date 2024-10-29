@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package monge.sdeu.objects;
+package com.deliveryexpress.sdeu.objects;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -38,6 +38,9 @@ public class Customer {
     @DatabaseField
      @Expose
     private String balanceAccountId;
+    
+    
+    
 
     /***
      * 
