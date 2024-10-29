@@ -7,7 +7,7 @@ package com.deliveryexpress.sdeu.objects.location;
 import com.google.gson.annotations.Expose;
 
 /**
- *
+ * Representa las coordenas usando el formato de googlemaps.com
  * @author DeliveryExpress
  */
 

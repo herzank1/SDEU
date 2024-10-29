@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  *
  * @author HP
- * Classe generica para administrar en la base de datos los objetos o clases
+ * Classe generica para administrar en la base de datos los objetos o classes
  */
 public class GenericDao<T, ID> {
     private final Dao<T, ID> dao;
