@@ -21,7 +21,7 @@ import lombok.Data;
 @Data
 public class Response <T> {
     @Expose
-    private String command; // Puedes usar esto para indicar el estado de la respuesta
+    private String command;
     @Expose
     private String mensaje;
     @Expose
@@ -46,6 +46,13 @@ public class Response <T> {
         }
     }
     
+    /***
+     * 
+     * @param command head o nombre de la funcion que genero esta respuesta
+     * @param mensaje succes, fail u otro
+     * @param input  cualquier tipo de objeto adjunto
+     * el objeto debera deserealizarse usando exposed anotacion
+     */
     public  Response(String command, String mensaje, T input) {
         this.command = command;
         this.mensaje = mensaje;

@@ -12,6 +12,8 @@ import lombok.Data;
 /**
  *
  * @author HP
+ * Representa la session de un usuario
+ * si account es nulo, el usuario no esta logeado
  */
 @Data
 public class UserSession{
