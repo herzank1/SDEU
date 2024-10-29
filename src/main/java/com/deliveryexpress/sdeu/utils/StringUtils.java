@@ -16,18 +16,21 @@ import java.lang.reflect.Type;
  */
 public class StringUtils {
     
-  // Método genérico para serializar cualquier objeto a JSON
-    public static <T> String toTJson(T obj) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(obj);
-    }
+ 
+    /***
+     * 
+     * @param o object to serialized
+     * @param exposedOnly true if want to exclude Fields Without Expose Annotation
+     * @return 
+     */
+    public static String toJson(Object o, boolean exposedOnly) {
 
-    public static String toJson(Object o) {
-
-        // Crear un objeto Gson con pretty printing
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Type responseType = new TypeToken<>() {}.getType();
-        // Convertir el objeto Java a JSON formateado
+        Gson gson;
+        if (exposedOnly) {
+            gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+        } else {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        }
 
         return gson.toJson(o);
 

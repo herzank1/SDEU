@@ -58,16 +58,5 @@ public class Response <T> {
 
     }
 
-   
-    
-       // Método para convertir la instancia actual a JSON
-    public String toJson() {
-        String toJson = new GsonBuilder()
-                .setPrettyPrinting()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create().toJson(this);
-            
-        // Serializar el objeto
-        return toJson;
-    }
+
 }

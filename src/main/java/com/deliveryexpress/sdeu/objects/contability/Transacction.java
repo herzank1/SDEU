@@ -6,6 +6,7 @@ package com.deliveryexpress.sdeu.objects.contability;
 
 import com.deliveryexpress.sdeu.database.SqliteDataBaseInteraction;
 import com.deliveryexpress.sdeu.utils.DateUtils;
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -18,25 +19,31 @@ import lombok.Data;
  */
 @Data
 public class Transacction {
+
     @DatabaseField(id = true)
+    @Expose
     String id;
     @DatabaseField
+    @Expose
     String from;
     @DatabaseField
+    @Expose
     String to;
     @DatabaseField
+    @Expose
     float mount;
     @DatabaseField
+    @Expose
     String date;
     @DatabaseField
+    @Expose
     String concept;
     @DatabaseField
+    @Expose
     String ref;
 
     public Transacction() {
     }
-    
-    
 
     public Transacction(String id, String from, String to, float mount, String concept, String ref) {
         this.id = UUID.randomUUID().toString();
@@ -47,30 +54,25 @@ public class Transacction {
         this.concept = concept;
         this.ref = ref;
     }
-    
-    
-    
-    public void execute(){
+
+    public void execute() {
         try {
-        
+
             BalanceAccount bfrom = SqliteDataBaseInteraction.balanceAccountsDao.read(from);
             BalanceAccount bto = SqliteDataBaseInteraction.balanceAccountsDao.read(to);
-            
-            bfrom.setBalance(bfrom.getBalance()-this.mount);
-            bto.setBalance(bto.getBalance()+this.mount);
-            
+
+            bfrom.setBalance(bfrom.getBalance() - this.mount);
+            bto.setBalance(bto.getBalance() + this.mount);
+
             SqliteDataBaseInteraction.balanceAccountsDao.update(bfrom);
             SqliteDataBaseInteraction.balanceAccountsDao.update(bto);
-            
+
             SqliteDataBaseInteraction.transacctionsDao.create(this);
-            
-            
+
         } catch (Exception ex) {
             Logger.getLogger(Transacction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-    
+
     }
-    
+
 }

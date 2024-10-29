@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.StringUtils;
+import com.google.gson.annotations.Expose;
 
 /**
  *
@@ -20,10 +21,13 @@ import com.deliveryexpress.sdeu.utils.StringUtils;
 public class Command {
 
     /*Id de la session*/
+    @Expose
     String sessionId;
     /*nombre del comando o funcion principal a executar*/
+    @Expose
     String command;
     /*lista de parametros*/
+    @Expose
     ArrayList<Param> params;
 
     public Command() {
@@ -61,8 +65,6 @@ public class Command {
         return null; // Retorna null si no se encuentra
     }
 
-    public String toJson() {
-        return StringUtils.toJson(this);
-    }
+   
 
 }

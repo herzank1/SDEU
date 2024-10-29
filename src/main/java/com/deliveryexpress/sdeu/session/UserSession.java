@@ -32,7 +32,10 @@ public class UserSession{
 
     }
     
-        // Constructor que recibe un Object y lo convierte en Session
+        /***
+         * Use this Constructor when recive in nested objectos truount in json response
+         * @param object to serailize json next UserSession
+         */
     public UserSession(Object object) {
             Gson gson = new Gson();
             // Convertimos el objeto en un String JSON y luego lo deserializamos

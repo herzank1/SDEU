@@ -6,6 +6,7 @@ package com.deliveryexpress.sdeu.objects.orders;
 
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.DateUtils;
+import com.google.gson.annotations.Expose;
 
 
 /**
@@ -15,6 +16,7 @@ import com.deliveryexpress.sdeu.utils.DateUtils;
 
 @Data
 public class OrderLog {
+    @Expose
      String data;
 
   public void addLog(String event, String value, String by) {

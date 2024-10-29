@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.DateUtils;
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import java.util.Timer;
@@ -36,44 +37,49 @@ import java.util.TimerTask;
 @DatabaseTable(tableName = "orders") 
 
 public class Order {
-
+@Expose
 @DatabaseField(id = true) // Campo ID
   private String id;
+@Expose
 @DatabaseField // Otros campos
   private String creationDate;
+@Expose
 @DatabaseField // Otros campos
   private String status;
+@Expose
 @DatabaseField // Otros campos
   private int preparationTime;//minutes
-
+@Expose
 @DatabaseField // Otros campos
   private String bussinesJson;
-
+@Expose
 @DatabaseField // Otros campos
   private String deliveryJson;
-
+@Expose
 @DatabaseField // Otros campos
   private String customerJson;
-
+@Expose
 @DatabaseField // Otros campos
   private float orderCost;
+@Expose
 @DatabaseField // Otros campos
   private float deliveryCost;
 
-
+@Expose
 @DatabaseField // Otros campos
   public String orderLogJson;
   /*ids de repartidores que cancelaron*/
-
+@Expose
   private String cancelersJson;
-
+@Expose
   /*true si el repartidor indica que llego al restaurante*/
   public boolean deliveryArrivedToBussines;
+@Expose
   /*true si el repartidor indica que llego con el cliente*/
   public boolean deliveryArrivedToCustomer;
-  
+  @Expose
   public boolean waitingDeliveryConfirmation = false;
-  
+  @Expose
   public boolean deliveryConfirmed = false;
 
   // Usaremos Gson para la serialización

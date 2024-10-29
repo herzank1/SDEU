@@ -6,6 +6,7 @@ package com.deliveryexpress.sdeu.session;
 
 
 import com.deliveryexpress.sdeu.objects.location.Position;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 /**
@@ -17,11 +18,17 @@ import lombok.Data;
 @Data
 public class DeliveryConection {
 
+    @Expose
     private String sessionId;
+    @Expose
     private String socketSessionId;
+    @Expose
     private String accId;//deliveryaccountId
+    @Expose
     private long lastUpdate;
+    @Expose
     private String position;
+    @Expose
     private boolean conected;
 
     public DeliveryConection(String sessionId,String socketSession,String accId) {

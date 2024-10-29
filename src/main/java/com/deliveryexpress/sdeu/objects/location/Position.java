@@ -4,6 +4,8 @@
  */
 package com.deliveryexpress.sdeu.objects.location;
 
+import com.google.gson.annotations.Expose;
+
 /**
  *
  * @author DeliveryExpress
@@ -12,7 +14,9 @@ package com.deliveryexpress.sdeu.objects.location;
 
 public class Position {
 
+    @Expose
   private double latitud;
+    @Expose
   private double longitud;
 
   // Constructor
