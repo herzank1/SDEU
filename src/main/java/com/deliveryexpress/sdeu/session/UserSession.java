@@ -15,46 +15,48 @@ import lombok.Data;
 
 /**
  *
- * @author HP
- * Representa la session de un usuario
- * si account es nulo, el usuario no esta logeado
+ * @author HP Representa la session de un usuario si account es nulo, el usuario
+ * no esta logeado
  */
 @Data
-public class UserSession{
- 
-    
+public class UserSession {
+
     @Expose
     private String id;
     @Expose
-    private long lastUpdate; /*unix time stamp*/
+    private long lastUpdate;
+    /*unix time stamp*/
     @Expose
     private User user;/*basic user*/
     @Expose
-    private Object account; /*Account of user*/
-    
-    
+    private Object account;
+
+    /*Account of user*/
+
 
     public UserSession() {
 
     }
-    
-        /***
-         * Use this Constructor when recive in nested objectos truount in json response
-         * @param object to serailize json next UserSession
-         */
+
+    /**
+     * *
+     * Use this Constructor when recive in nested objectos truount in json
+     * response
+     *
+     * @param object to serailize json next UserSession
+     */
     public UserSession(Object object) {
-            Gson gson = new Gson();
-            // Convertimos el objeto en un String JSON y luego lo deserializamos
-            String json = gson.toJson(object);
-            UserSession session = gson.fromJson(json, UserSession.class);
+        Gson gson = new Gson();
+        // Convertimos el objeto en un String JSON y luego lo deserializamos
+        String json = gson.toJson(object);
+        UserSession session = gson.fromJson(json, UserSession.class);
 
-            // Asignamos los valores deserializados a los atributos
-            this.id = session.id;
-            this.lastUpdate = session.lastUpdate;
-            this.user = session.user;
-            this.account = session.account;
-        }
-
+        // Asignamos los valores deserializados a los atributos
+        this.id = session.id;
+        this.lastUpdate = session.lastUpdate;
+        this.user = session.user;
+        this.account = session.account;
+    }
 
     // Método que verifica si la sesión ha expirado
     public boolean isExpired() {
@@ -63,39 +65,55 @@ public class UserSession{
         // Verificar si la diferencia es mayor o igual a 30 minutos (30 * 60 * 1000 ms)
         return (currentTime - lastUpdate) >= (30 * 60 * 1000);
     }
-    
-  
-    
+
     public boolean isLogged() {
         return this.user != null;
     }
 
+    public String getAccountType() {
+        return this.user.getAccountType();
 
- 
-    public String getAccountType(){
-    return this.user.getAccountType();
-    
     }
-    
-    public String getAccountId(){
-    return this.user.getAccountId();
-    
+
+    public String getAccountId() {
+        return this.user.getAccountId();
+
     }
 
     public Delivery getDelivery() {
-        return (Delivery) this.getAccount();
+        if (this.account instanceof Delivery) {
+            return (Delivery) this.getAccount();
+        } else {
+            return null;
+        }
+
     }
 
     public Bussines getBussines() {
-        return (Bussines) this.getAccount();
+
+        if (this.account instanceof Bussines) {
+            return (Bussines) this.getAccount();
+        } else {
+            return null;
+        }
     }
 
     public Moderator getModerator() {
-        return (Moderator) this.getAccount();
+
+        if (this.account instanceof Moderator) {
+            return (Moderator) this.getAccount();
+        } else {
+            return null;
+        }
     }
-    
-     public Customer getCustomer() {
-        return (Customer) this.getAccount();
+
+    public Customer getCustomer() {
+
+        if (this.account instanceof Customer) {
+            return (Customer) this.getAccount();
+        } else {
+            return null;
+        }
     }
 
 }
