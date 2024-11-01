@@ -13,6 +13,7 @@ import com.deliveryexpress.sdeu.objects.User;
 import com.deliveryexpress.sdeu.objects.contability.BalanceAccount;
 import com.deliveryexpress.sdeu.objects.contability.Transacction;
 import com.deliveryexpress.sdeu.objects.orders.Order;
+import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -39,7 +40,7 @@ public class SqliteDataBaseInteraction {
     public static GenericDao<Moderator, String> moderatorDao;
     public static GenericDao<BalanceAccount, String> balanceAccountsDao;
     public static GenericDao<Transacction, String> transacctionsDao;
-    public static GenericDao<Order, String> OrderDao;
+    public static GenericDao<StorableOrder, String> StorableOrderDao;
     
    
 
@@ -98,7 +99,7 @@ public class SqliteDataBaseInteraction {
             TableUtils.createTableIfNotExists(connectionSource, BalanceAccount.class);
             transacctionsDao = new GenericDao<>(connectionSource, Transacction.class);
             TableUtils.createTableIfNotExists(connectionSource, Transacction.class);
-            OrderDao = new GenericDao<>(connectionSource, Order.class);
+            StorableOrderDao = new GenericDao<>(connectionSource, StorableOrder.class);
             TableUtils.createTableIfNotExists(connectionSource, Order.class);
             moderatorDao = new GenericDao<>(connectionSource, Moderator.class);
             TableUtils.createTableIfNotExists(connectionSource, Moderator.class);
@@ -115,7 +116,7 @@ public class SqliteDataBaseInteraction {
         TableValidator.verifyTable(customersDao, Customer.class);
         TableValidator.verifyTable(balanceAccountsDao, BalanceAccount.class);
         TableValidator.verifyTable(transacctionsDao, Transacction.class);
-        TableValidator.verifyTable(OrderDao, Order.class);
+        TableValidator.verifyTable(StorableOrderDao, StorableOrder.class);
         TableValidator.verifyTable(moderatorDao, Moderator.class);
 
     }

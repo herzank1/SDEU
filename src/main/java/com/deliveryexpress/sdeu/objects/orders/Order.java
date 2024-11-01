@@ -25,48 +25,55 @@ import com.deliveryexpress.sdeu.utils.DateUtils;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
 /**
  *
- * @author HP
+ * @author DeliveryExpress
  */
 @Data
-@DatabaseTable(tableName = "orders") 
+
 
 public class Order {
 @Expose
 @DatabaseField(id = true) // Campo ID
   private String id;
 @Expose
-@DatabaseField // Otros campos
+
   private String creationDate;
 @Expose
-@DatabaseField // Otros campos
+
   private String status;
 @Expose
-@DatabaseField // Otros campos
+
   private int preparationTime;//minutes
+
+/**********************Nested Accounts*************************************/
 @Expose
-@DatabaseField // Otros campos
-  private String bussinesJson;
+
+  private Bussines bussines;
 @Expose
-@DatabaseField // Otros campos
-  private String deliveryJson;
+
+  private Delivery delivery;
 @Expose
-@DatabaseField // Otros campos
-  private String customerJson;
+
+  private Customer customer;
+
+/**********************Nested Accounts*************************************/
 @Expose
-@DatabaseField // Otros campos
+
   private float orderCost;
 @Expose
-@DatabaseField // Otros campos
+
   private float deliveryCost;
 
 @Expose
-@DatabaseField // Otros campos
+
   public String orderLogJson;
   /*ids de repartidores que cancelaron*/
 @Expose
@@ -78,6 +85,7 @@ public class Order {
   /*true si el repartidor indica que llego con el cliente*/
   public boolean deliveryArrivedToCustomer;
   @Expose
+  /*bandera - si la orden esta esperando confirmacion del repartidor, evita que se le asigne otra orden al momento*/
   public boolean waitingDeliveryConfirmation = false;
   @Expose
   public boolean deliveryConfirmed = false;
@@ -94,34 +102,43 @@ public class Order {
     this.status = OrderStatus.PREPARANDO;
     this.preparationTime = 0;
     this.setBussines(bussines);
-    this.deliveryJson = gson.toJson(null);
-    this.customerJson = gson.toJson(null);
+    this.delivery= null;
+    this.customer = null;
 
     this.orderCost = 0;
     this.deliveryCost = 0;
 
-   // this.chatJson = gson.toJson(new ChatBox());
     this.orderLogJson = gson.toJson(new OrderLog());
     this.cancelersJson = gson.toJson(new ArrayList());
-
-    /*true si el repartidor indica que llego al restaurante*/
 
   }
 
   /**
-   * *
-   *
    * @return if order has no delivery and its about ti be ready
    */
   public boolean isReadyToTake() {
-
-    if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
-      return false;
+    // Si el estado es 'LISTO', se puede recoger
+    if (status.equals(OrderStatus.LISTO)) {
+        return true;
     }
 
+    // Si el estado no es 'PREPARANDO' ni 'LISTO', no se puede recoger
+    if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
+        return false;
+    }
+
+    // Verificar si la orden está casi lista
     boolean orderAlmostReady = DateUtils.isOrderAlmostReady(this.creationDate, this.preparationTime);
-    return orderAlmostReady && this.deliveryJson == null;
-  }
+    
+    /*en caso de que este casi lista debera establecerse como lista pa recolectar*/
+    if(orderAlmostReady&&status.equals(OrderStatus.PREPARANDO)){
+        this.setStatus(OrderStatus.LISTO);
+    
+    }
+    
+    // Devolver true solo si está casi lista y no hay un deliveryJson asociado
+    return orderAlmostReady && this.delivery == null;
+}
 
 
   public float getTotal() {
@@ -144,8 +161,13 @@ public class Order {
 
     
     Timer timer;
+  
     public void startCountdown() {
-     TimerTask task = new TimerTask() {
+
+        this.waitingDeliveryConfirmation = true;
+
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
             int remainingTime = 10;//10 segundos
 
             @Override
@@ -167,7 +189,7 @@ public class Order {
 
         // Programa la tarea para ejecutarse cada segundo (1000 ms)
         timer.scheduleAtFixedRate(task, 0, 1000);
-    
+
     }
 
     /***
@@ -178,6 +200,7 @@ public class Order {
       return waitingDeliveryConfirmation;
     }
 
+    /*retorna true si el repartidor confirmo*/
     public boolean isDeliveryConfirmation() {
      
     return deliveryConfirmed;
@@ -217,6 +240,10 @@ public class Order {
     
     }
 
+    @Deprecated
+    /***
+     * Use a OrderControl set Status alternative
+     */
     public void changeStatusByDelivery(String status) {
      
         this.setStatus(status);
@@ -224,33 +251,17 @@ public class Order {
     }
 
 
-
-  // Getters y Setters para los campos JSON
-  public Bussines getBussines() {
-    return gson.fromJson(bussinesJson, Bussines.class);
-  }
-
-  public void setBussines(Bussines bussines) {
-    this.bussinesJson = gson.toJson(bussines);
-  }
-
-  public Delivery getDelivery() {
-    return gson.fromJson(deliveryJson, Delivery.class);
-  }
-
-  public void setDelivery(Delivery delivery) {
-    this.deliveryJson = gson.toJson(delivery);
-  }
-
-  public Customer getCustomer() {
-    return gson.fromJson(customerJson, Customer.class);
-  }
-
-  public void setCustomer(Customer customer) {
-    this.customerJson = gson.toJson(customer);
-  }
-
-
+    /***
+     * 
+     * @param event what happened
+     * @param value some reference
+     * @param by User who made it
+     */
+    public void addLog(String event, String value, String by) {
+        OrderLog orderLog = this.getOrderLog();
+        orderLog.addLog(event, value, by);
+        this.setOrderLog(orderLog);
+    }
 
   // Getter y setter para OrderLog
   public OrderLog getOrderLog() {
@@ -260,6 +271,16 @@ public class Order {
   public void setOrderLog(OrderLog orderLog) {
     this.orderLogJson = gson.toJson(orderLog);
   }
+  
+ /***
+  * agregar repartidor a la lista de canceladores
+  * @param bayGuyDelivery 
+  */
+    public void addCanceler(String bayGuyDelivery) {
+        List<String> cancelers = getCancelers();
+        cancelers.add(bayGuyDelivery);
+        this.setCancelers(cancelers);
+    }
 
   // Getter y setter para cancelers (lista de IDs de repartidores que cancelaron)
   public List<String> getCancelers() {
@@ -278,5 +299,51 @@ public class Order {
     }
     return this.id.substring(this.id.length() - 5);
   }
+  
+  /***
+   * 
+   * @return la fecha en que la orden debe estar lista
+   */
+    public String getReadyDateTime() {
+        // Formato de fecha y hora
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // Convertir creationDate a LocalDateTime
+        LocalDateTime creationDateTime = LocalDateTime.parse(this.creationDate, formatter);
+        // Sumar preparationTime en minutos
+        LocalDateTime readyDateTime = creationDateTime.plusMinutes(this.preparationTime);
+        // Convertir el resultado de vuelta a String en el mismo formato
+        return readyDateTime.format(formatter);
+    }
+    
+    /***
+     * 
+     * @param minutes
+     * @return verdadero si an pasado los minutos indicados desde el momento que 
+     * deberia estar lista
+     */
+        public boolean timePassedSinceReadyTime(int minutes) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime readyDateTime = LocalDateTime.parse(getReadyDateTime(), formatter);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // Calcular la diferencia en minutos
+        long minutesBetween = ChronoUnit.MINUTES.between(readyDateTime, currentTime);
+
+        // Retorna true si han pasado más de 30 minutos
+        return minutesBetween > minutes;
+    }
+  
+    public boolean isCancelableForBussines() {
+        return timePassedSinceReadyTime(30);
+
+    }
+    
+    /***
+     * Return the storable representation of this order
+     * @return 
+     */
+    public StorableOrder getStorableOrder() {
+        return new StorableOrder(this);
+    }
 
 }

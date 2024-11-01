@@ -7,6 +7,7 @@ package com.deliveryexpress.sdeu.objects.orders;
 /**
  *
  * @author DeliveryExpress
+ * a short information of a order
  */
 import lombok.Data;
 
