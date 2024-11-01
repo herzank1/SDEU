@@ -114,14 +114,28 @@ public class Order {
    * @return if order has no delivery and its about ti be ready
    */
   public boolean isReadyToTake() {
-
-    if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
-      return false;
+    // Si el estado es 'LISTO', se puede recoger
+    if (status.equals(OrderStatus.LISTO)) {
+        return true;
     }
 
+    // Si el estado no es 'PREPARANDO' ni 'LISTO', no se puede recoger
+    if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
+        return false;
+    }
+
+    // Verificar si la orden está casi lista
     boolean orderAlmostReady = DateUtils.isOrderAlmostReady(this.creationDate, this.preparationTime);
+    
+    /*en caso de que este casi lista debera establecerse como lista pa recolectar*/
+    if(orderAlmostReady&&status.equals(OrderStatus.PREPARANDO)){
+        this.setStatus(OrderStatus.LISTO);
+    
+    }
+    
+    // Devolver true solo si está casi lista y no hay un deliveryJson asociado
     return orderAlmostReady && this.deliveryJson == null;
-  }
+}
 
 
   public float getTotal() {

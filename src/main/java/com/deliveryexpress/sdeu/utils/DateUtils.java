@@ -53,7 +53,8 @@ public class DateUtils {
             long differenceInMinutes = differenceInMillis / (60 * 1000);
 
             // Verificar si le faltan al menos 5 minutos
-            return differenceInMinutes <= 5 && differenceInMinutes >= 0; // Retorna true si está casi lista
+            // Verificar si faltan 5 minutos o si ya ha pasado el tiempo de preparación
+        return differenceInMinutes <= 5; // Retorna true si faltan 5 minutos o más tiempo ha pasado
 
         } catch (ParseException e) {
             e.printStackTrace();
