@@ -4,6 +4,10 @@
  */
 package com.deliveryexpress.sdeu.session;
 
+import com.deliveryexpress.sdeu.objects.Bussines;
+import com.deliveryexpress.sdeu.objects.Customer;
+import com.deliveryexpress.sdeu.objects.Delivery;
+import com.deliveryexpress.sdeu.objects.Moderator;
 import com.deliveryexpress.sdeu.objects.User;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
@@ -78,5 +82,20 @@ public class UserSession{
     
     }
 
-  
+    public Delivery getDelivery() {
+        return (Delivery) this.getAccount();
+    }
+
+    public Bussines getBussines() {
+        return (Bussines) this.getAccount();
+    }
+
+    public Moderator getModerator() {
+        return (Moderator) this.getAccount();
+    }
+    
+     public Customer getCustomer() {
+        return (Customer) this.getAccount();
+    }
+
 }

@@ -8,6 +8,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.DatabaseTable;
+import java.lang.annotation.Annotation;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,8 +22,10 @@ import java.util.logging.Logger;
  */
 public class GenericDao<T, ID> {
     private final Dao<T, ID> dao;
+    private final Class clazz;
 
     public GenericDao(ConnectionSource connectionSource, Class<T> clazz) throws SQLException{
+        this.clazz = clazz;
             dao = DaoManager.createDao(connectionSource, clazz);
         
     }
@@ -90,5 +94,24 @@ public class GenericDao<T, ID> {
             return null;
         }
 
+    }
+
+    public String getTableName() {
+
+        return generateTableNameFromClass(clazz);
+
+    }
+
+    /***
+     * 
+     * @param clazz
+     * @return examploe class User return class user as tableName
+     */
+    private static String generateTableNameFromClass(Class<?> clazz) {
+        // Convertir el nombre de la clase a minúsculas
+        String className = clazz.getSimpleName().toLowerCase();
+        // Reemplazar caracteres especiales y espacios con guiones bajos
+        String tableName = className.replaceAll("[^a-zA-Z0-9]", "_");
+        return tableName;
     }
 }

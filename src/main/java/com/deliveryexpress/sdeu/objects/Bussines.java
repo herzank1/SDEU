@@ -37,6 +37,11 @@ public class Bussines {
     @DatabaseField
     @Expose
     private String balanceAccountId;
+    
+       /*Non storable values*/
+
+    @Expose
+    private long conected;
 
     public Bussines() {
     }
@@ -57,6 +62,12 @@ public class Bussines {
         this.address = businessFromJson.address;
         this.position = businessFromJson.position;
         this.balanceAccountId = businessFromJson.balanceAccountId;
+        
+            /*conection variables*/
+        this.conected = businessFromJson.conected;
     }
+    
+    
+    
     
 }

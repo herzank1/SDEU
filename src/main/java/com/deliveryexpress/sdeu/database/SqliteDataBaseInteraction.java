@@ -31,6 +31,7 @@ public class SqliteDataBaseInteraction {
   
     public static final String DATABASE_URL = "jdbc:sqlite:database.sqlite";
     private static ConnectionSource connectionSource;
+    
     public static GenericDao<User, String> usersDao;
     public static GenericDao<Bussines, String> bussinesDao;
     public static GenericDao<Delivery, String> deliveriDao;
@@ -39,6 +40,8 @@ public class SqliteDataBaseInteraction {
     public static GenericDao<BalanceAccount, String> balanceAccountsDao;
     public static GenericDao<Transacction, String> transacctionsDao;
     public static GenericDao<Order, String> OrderDao;
+    
+   
 
     /***
      * 
@@ -48,9 +51,41 @@ public class SqliteDataBaseInteraction {
     public static void init(String filename) {
 
         // Crear la conexión a la base de datos y generacion de Daos
-        JdbcConnectionSource connectionSource;
+        
         try {
-            connectionSource = new JdbcConnectionSource(SqliteDataBaseInteraction.DATABASE_URL);
+             // Cargar el controlador JDBC para SQLite
+            Class.forName("org.sqlite.JDBC");
+            connectionSource = new JdbcConnectionSource(DATABASE_URL);
+
+            initDaos();
+            validateClassChanges();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(SqliteDataBaseInteraction.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SqliteDataBaseInteraction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public static ConnectionSource getConnectionSource() {
+        return connectionSource;
+    }
+
+    public static String getDATABASE_URL() {
+        return DATABASE_URL;
+    }
+    
+    
+    
+    
+
+    public static void close() throws IOException, Exception {
+        connectionSource.close();
+    }
+    
+    public static void initDaos() {
+        try {
             usersDao = new GenericDao<>(connectionSource, User.class);
             TableUtils.createTableIfNotExists(connectionSource, User.class);
             bussinesDao = new GenericDao<>(connectionSource, Bussines.class);
@@ -63,18 +98,25 @@ public class SqliteDataBaseInteraction {
             TableUtils.createTableIfNotExists(connectionSource, BalanceAccount.class);
             transacctionsDao = new GenericDao<>(connectionSource, Transacction.class);
             TableUtils.createTableIfNotExists(connectionSource, Transacction.class);
-            OrderDao =  new GenericDao<>(connectionSource, Order.class);
+            OrderDao = new GenericDao<>(connectionSource, Order.class);
             TableUtils.createTableIfNotExists(connectionSource, Order.class);
-             moderatorDao =  new GenericDao<>(connectionSource, Moderator.class);
+            moderatorDao = new GenericDao<>(connectionSource, Moderator.class);
             TableUtils.createTableIfNotExists(connectionSource, Moderator.class);
-
         } catch (SQLException ex) {
             Logger.getLogger(SqliteDataBaseInteraction.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    public static void close() throws IOException, Exception {
-        connectionSource.close();
+    public static void validateClassChanges() {
+        TableValidator.verifyTable(usersDao, User.class);
+        TableValidator.verifyTable(bussinesDao, Bussines.class);
+        TableValidator.verifyTable(deliveriDao, Delivery.class);
+        TableValidator.verifyTable(customersDao, Customer.class);
+        TableValidator.verifyTable(balanceAccountsDao, BalanceAccount.class);
+        TableValidator.verifyTable(transacctionsDao, Transacction.class);
+        TableValidator.verifyTable(OrderDao, Order.class);
+        TableValidator.verifyTable(moderatorDao, Moderator.class);
+
     }
 }

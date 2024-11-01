@@ -4,6 +4,7 @@
  */
 package com.deliveryexpress.sdeu.objects;
 
+import com.deliveryexpress.sdeu.objects.location.Position;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -19,7 +20,7 @@ public class Delivery {
     
     @DatabaseField(id = true)
      @Expose
-    private String id;
+    private String id; /*Id of deliveryAccount in db*/
     @DatabaseField
      @Expose
     private String name;
@@ -32,6 +33,15 @@ public class Delivery {
     @DatabaseField
      @Expose
     private String balanceAccountId;
+    
+    /*Non storable values*/
+
+    @Expose
+    private long lastUpdate;
+    @Expose
+    private String position; /**current delivery position*/
+    @Expose
+    private boolean conected;
     
         // Constructor que recibe un objeto y lo convierte a JSON
     public Delivery(Object obj) {
@@ -46,11 +56,68 @@ public class Delivery {
         this.phone = deliveryFromJson.phone;
         this.address = deliveryFromJson.address;
         this.balanceAccountId = deliveryFromJson.balanceAccountId;
+        
+        /*conection variables*/
+         this.lastUpdate = deliveryFromJson.lastUpdate;
+          this.position = deliveryFromJson.position;
+           this.conected = deliveryFromJson.conected;
+
     }
 
     public Delivery() {
     }
     
     
+       
+    public void disconect() {
+        this.conected = false;
+    }
+    
+     // Actualiza el lastUpdate con el timestamp actual
+    public void connect() {
+        this.conected=true;
+    }
+    
+      // Actualiza el lastUpdate con el timestamp actual
+    public void update(String position) {
+        this.lastUpdate = System.currentTimeMillis();
+        this.position = position;
+    }
+     // Retorna si está conectado
+    public boolean isConected() {
+        return sessionExpired()==false&&conected&&getPosition()!=null;
+    }
+    
+    // Verifica si el lastUpdate es menor a 5 minutos
+    public boolean sessionExpired() {
+        long tiempoActual = System.currentTimeMillis();
+        long cincoMinutosEnMilisegundos = 5 * 60 * 1000; // 5 minutos en milisegundos
+        return (tiempoActual - this.lastUpdate) > cincoMinutosEnMilisegundos;
+    }
+    
+    public Position getPosition() {
+        if (this.position.isEmpty()) {
+            return null;
+        } else {
+            return new Position(this.position);
+        }
+
+    }
+
+  
+
+    public void switchConected() {
+      this.conected = !this.conected;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public DeliveryDTO toDeliveryDTO() {
+        return new DeliveryDTO(
+                this.getId(),
+                this.getName(),
+                this.getPosition().toString(),
+                this.isConected()
+        );
+    }
+
     
 }
