@@ -4,16 +4,35 @@
  */
 package com.deliveryexpress.sdeu.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author DeliveryExpress
  */
 
    
-    public interface AccountType {
+public interface AccountType {
 
-        String CUSTOMER = "CUSTOMER";
-        String BUSSINES = "BUSSINES";
-        String DELIVERY = "DELIVERY";
-        String MODERATOR = "MODERATOR";
+    String CUSTOMER = "CUSTOMER";
+    String BUSSINES = "BUSSINES";
+    String DELIVERY = "DELIVERY";
+    String MODERATOR = "MODERATOR";
+
+   public static boolean isValidAccountType(String input) {
+        return CUSTOMER.equals(input)
+                || BUSSINES.equals(input)
+                || DELIVERY.equals(input)
+                || MODERATOR.equals(input);
     }
+   
+    public static List<String> getAllAccountTypes() {
+        List<String> accountTypes = new ArrayList<>();
+        accountTypes.add(CUSTOMER);
+        accountTypes.add(BUSSINES);
+        accountTypes.add(DELIVERY);
+        accountTypes.add(MODERATOR);
+        return accountTypes;
+    }
+}

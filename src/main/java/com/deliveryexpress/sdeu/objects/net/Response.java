@@ -21,7 +21,11 @@ import lombok.Data;
 @Data
 public class Response <T> {
     @Expose
+    private String id; /*same than command id*/
+    @Expose
     private String command;
+    @Expose
+    private String status; //success or fail
     @Expose
     private String mensaje;
     @Expose
@@ -35,7 +39,9 @@ public class Response <T> {
         try {
             // Deserializa el jsonString en este objeto Command
             Response r = gson.fromJson(jsonString, Response.class);
+            this.id = r.getId();
             this.command = r.getCommand();
+            this.status = r.getStatus();
             this.mensaje = r.getMensaje();
 
             this.dataArray = r.getDataArray();
@@ -53,9 +59,11 @@ public class Response <T> {
      * @param input  cualquier tipo de objeto adjunto
      * el objeto debera deserealizarse usando exposed anotacion
      */
-    public  Response(String command, String mensaje, T input) {
-        this.command = command;
-        this.mensaje = mensaje;
+    public  Response(Command command, String status, T input) {
+        this.id = command.id;
+        this.command = command.command;
+        this.status = status;
+        this.mensaje = "";
 
          if (input instanceof Collection) {  // Verifica si es una colección
             this.dataArray = new ArrayList<>((Collection<T>) input);  // Convierte la colección a ArrayList
@@ -64,6 +72,18 @@ public class Response <T> {
         }
 
     }
+    
+   public boolean success() {
+    return this.status.equalsIgnoreCase("success") ||
+           this.status.equalsIgnoreCase("ok") ||
+           this.status.equals("1") ||
+           this.status.equalsIgnoreCase("true");
+}
 
+    public interface Status{
+    
+    String SUCCESS = "SUCCESS";
+    String FAIL = "FAIL";
+    }
 
 }

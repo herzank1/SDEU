@@ -8,7 +8,6 @@ package com.deliveryexpress.sdeu.objects.orders;
  *
  * @author DeliveryExpress
  */
-
 import com.deliveryexpress.sdeu.objects.AccountType;
 import com.deliveryexpress.sdeu.objects.Bussines;
 import com.deliveryexpress.sdeu.objects.Customer;
@@ -31,137 +30,138 @@ import java.time.temporal.ChronoUnit;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  *
  * @author DeliveryExpress
  */
 @Data
 
-
 public class Order {
-@Expose
-@DatabaseField(id = true) // Campo ID
-  private String id;
-@Expose
 
-  private String creationDate;
-@Expose
+    @Expose
 
-  private String status;
-@Expose
+    private String id;
+    @Expose
 
-  private int preparationTime;//minutes
+    private String creationDate;
+    @Expose
 
-/**********************Nested Accounts*************************************/
-@Expose
+    private String status;
+    @Expose
 
-  private Bussines bussines;
-@Expose
+    private int preparationTime;//minutes
 
-  private Delivery delivery;
-@Expose
+    /**
+     * ********************Nested Accounts************************************
+     */
+    @Expose
 
-  private Customer customer;
+    private Bussines bussines;
+    @Expose
 
-/**********************Nested Accounts*************************************/
-@Expose
+    private Delivery delivery;
+    @Expose
 
-  private float orderCost;
-@Expose
+    private Customer customer;
 
-  private float deliveryCost;
+    /**
+     * ********************Nested Accounts************************************
+     */
+    @Expose
 
-@Expose
+    private float orderCost;
+    @Expose
 
-  public String orderLogJson;
-  /*ids de repartidores que cancelaron*/
-@Expose
-  private String cancelersJson;
-@Expose
-  /*true si el repartidor indica que llego al restaurante*/
-  public boolean deliveryArrivedToBussines;
-@Expose
-  /*true si el repartidor indica que llego con el cliente*/
-  public boolean deliveryArrivedToCustomer;
-  @Expose
-  /*bandera - si la orden esta esperando confirmacion del repartidor, evita que se le asigne otra orden al momento*/
-  public boolean waitingDeliveryConfirmation = false;
-  @Expose
-  public boolean deliveryConfirmed = false;
+    private float deliveryCost;
 
-  // Usaremos Gson para la serialización
-  private static final Gson gson = new Gson();
+    @Expose
 
-  public Order() {
-  }
+    public String orderLogJson;
+    /*ids de repartidores que cancelaron*/
+    @Expose
+    private String cancelersJson;
+    @Expose
+    /*true si el repartidor indica que llego al restaurante*/
+    public boolean deliveryArrivedToBussines;
+    @Expose
+    /*true si el repartidor indica que llego con el cliente*/
+    public boolean deliveryArrivedToCustomer;
+    @Expose
+    /*bandera - si la orden esta esperando confirmacion del repartidor, evita que se le asigne otra orden al momento*/
+    public boolean waitingDeliveryConfirmation = false;
+    @Expose
+    public boolean deliveryConfirmed = false;
 
-  public Order(Bussines bussines) {
-    this.id = UUID.randomUUID().toString();
-    this.creationDate = DateUtils.now();
-    this.status = OrderStatus.PREPARANDO;
-    this.preparationTime = 0;
-    this.setBussines(bussines);
-    this.delivery= null;
-    this.customer = null;
+    // Usaremos Gson para la serialización
+    private static final Gson gson = new Gson();
 
-    this.orderCost = 0;
-    this.deliveryCost = 0;
-
-    this.orderLogJson = gson.toJson(new OrderLog());
-    this.cancelersJson = gson.toJson(new ArrayList());
-
-  }
-
-  /**
-   * @return if order has no delivery and its about ti be ready
-   */
-  public boolean isReadyToTake() {
-    // Si el estado es 'LISTO', se puede recoger
-    if (status.equals(OrderStatus.LISTO)) {
-        return true;
+    public Order() {
     }
 
-    // Si el estado no es 'PREPARANDO' ni 'LISTO', no se puede recoger
-    if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
-        return false;
+    public Order(Bussines bussines) {
+        this.id = UUID.randomUUID().toString();
+        this.creationDate = DateUtils.now();
+        this.status = OrderStatus.PREPARANDO;
+        this.preparationTime = 0;
+        this.setBussines(bussines);
+        this.delivery = null;
+        this.customer = null;
+
+        this.orderCost = 0;
+        this.deliveryCost = 0;
+
+        this.orderLogJson = gson.toJson(new OrderLog());
+        this.cancelersJson = gson.toJson(new ArrayList());
+
     }
 
-    // Verificar si la orden está casi lista
-    boolean orderAlmostReady = DateUtils.isOrderAlmostReady(this.creationDate, this.preparationTime);
-    
-    /*en caso de que este casi lista debera establecerse como lista pa recolectar*/
-    if(orderAlmostReady&&status.equals(OrderStatus.PREPARANDO)){
-        this.setStatus(OrderStatus.LISTO);
-    
+    /**
+     * @return if order has no delivery and its about ti be ready
+     */
+    public boolean isReadyToTake() {
+        // Si el estado es 'LISTO', se puede recoger
+        if (status.equals(OrderStatus.LISTO)) {
+            return true;
+        }
+
+        // Si el estado no es 'PREPARANDO' ni 'LISTO', no se puede recoger
+        if (!status.equals(OrderStatus.PREPARANDO) && !status.equals(OrderStatus.LISTO)) {
+            return false;
+        }
+
+        // Verificar si la orden está casi lista
+        boolean orderAlmostReady = DateUtils.isOrderAlmostReady(this.creationDate, this.preparationTime);
+
+        /*en caso de que este casi lista debera establecerse como lista pa recolectar*/
+        if (orderAlmostReady && status.equals(OrderStatus.PREPARANDO)) {
+            this.setStatus(OrderStatus.LISTO);
+
+        }
+
+        // Devolver true solo si está casi lista y no hay un deliveryJson asociado
+        return orderAlmostReady && this.delivery == null;
     }
-    
-    // Devolver true solo si está casi lista y no hay un deliveryJson asociado
-    return orderAlmostReady && this.delivery == null;
-}
 
+    public float getTotal() {
 
-  public float getTotal() {
-
-    return this.orderCost + this.deliveryCost;
-  }
+        return this.orderCost + this.deliveryCost;
+    }
 
     public boolean isRecolectable() {
-        
+
         if (this.getDelivery() != null) {
             return false;
         }
-        
+
         if (!isReadyToTake()) {
             return false;
         }
-        
+
         return true;
     }
 
-    
     Timer timer;
-  
+
     public void startCountdown() {
 
         this.waitingDeliveryConfirmation = true;
@@ -192,18 +192,20 @@ public class Order {
 
     }
 
-    /***
-     * 
-     * @return true si esta esperando confirmacion, asumiendo que la orden tiene un repartidor asignado
+    /**
+     * *
+     *
+     * @return true si esta esperando confirmacion, asumiendo que la orden tiene
+     * un repartidor asignado
      */
     public boolean isWaitingConfirmation() {
-      return waitingDeliveryConfirmation;
+        return waitingDeliveryConfirmation;
     }
 
     /*retorna true si el repartidor confirmo*/
     public boolean isDeliveryConfirmation() {
-     
-    return deliveryConfirmed;
+
+        return deliveryConfirmed;
     }
 
     public void deliveryReject() {
@@ -226,33 +228,34 @@ public class Order {
     }
 
     public void arrivedTo(String where) {
-     
-        switch(where){
-        
+
+        switch (where) {
+
             case AccountType.BUSSINES:
                 this.deliveryArrivedToBussines = true;
                 break;
-                
-                case AccountType.CUSTOMER:
+
+            case AccountType.CUSTOMER:
                 this.deliveryArrivedToCustomer = true;
                 break;
         }
-    
+
     }
 
     @Deprecated
-    /***
+    /**
+     * *
      * Use a OrderControl set Status alternative
      */
     public void changeStatusByDelivery(String status) {
-     
+
         this.setStatus(status);
-    
+
     }
 
-
-    /***
-     * 
+    /**
+     * *
+     *
      * @param event what happened
      * @param value some reference
      * @param by User who made it
@@ -263,47 +266,50 @@ public class Order {
         this.setOrderLog(orderLog);
     }
 
-  // Getter y setter para OrderLog
-  public OrderLog getOrderLog() {
-    return gson.fromJson(orderLogJson, OrderLog.class);
-  }
+    // Getter y setter para OrderLog
+    public OrderLog getOrderLog() {
+        return gson.fromJson(orderLogJson, OrderLog.class);
+    }
 
-  public void setOrderLog(OrderLog orderLog) {
-    this.orderLogJson = gson.toJson(orderLog);
-  }
-  
- /***
-  * agregar repartidor a la lista de canceladores
-  * @param bayGuyDelivery 
-  */
+    public void setOrderLog(OrderLog orderLog) {
+        this.orderLogJson = gson.toJson(orderLog);
+    }
+
+    /**
+     * *
+     * agregar repartidor a la lista de canceladores
+     *
+     * @param bayGuyDelivery
+     */
     public void addCanceler(String bayGuyDelivery) {
         List<String> cancelers = getCancelers();
         cancelers.add(bayGuyDelivery);
         this.setCancelers(cancelers);
     }
 
-  // Getter y setter para cancelers (lista de IDs de repartidores que cancelaron)
-  public List<String> getCancelers() {
-    Type listType = new TypeToken<ArrayList<String>>() {
-    }.getType();
-    return gson.fromJson(cancelersJson, listType);
-  }
-
-  public void setCancelers(List<String> cancelers) {
-    this.cancelersJson = gson.toJson(cancelers);
-  }
-
-  public  String getShortId() {
-    if (this.id == null || this.id.length() < 5) {
-      return this.id; // Devuelve la cadena completa si tiene menos de 5 caracteres
+    // Getter y setter para cancelers (lista de IDs de repartidores que cancelaron)
+    public List<String> getCancelers() {
+        Type listType = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        return gson.fromJson(cancelersJson, listType);
     }
-    return this.id.substring(this.id.length() - 5);
-  }
-  
-  /***
-   * 
-   * @return la fecha en que la orden debe estar lista
-   */
+
+    public void setCancelers(List<String> cancelers) {
+        this.cancelersJson = gson.toJson(cancelers);
+    }
+
+    public String getShortId() {
+        if (this.id == null || this.id.length() < 5) {
+            return this.id; // Devuelve la cadena completa si tiene menos de 5 caracteres
+        }
+        return this.id.substring(this.id.length() - 5);
+    }
+
+    /**
+     * *
+     *
+     * @return la fecha en que la orden debe estar lista
+     */
     public String getReadyDateTime() {
         // Formato de fecha y hora
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -314,14 +320,15 @@ public class Order {
         // Convertir el resultado de vuelta a String en el mismo formato
         return readyDateTime.format(formatter);
     }
-    
-    /***
-     * 
+
+    /**
+     * *
+     *
      * @param minutes
-     * @return verdadero si an pasado los minutos indicados desde el momento que 
+     * @return verdadero si an pasado los minutos indicados desde el momento que
      * deberia estar lista
      */
-        public boolean timePassedSinceReadyTime(int minutes) {
+    public boolean timePassedSinceReadyTime(int minutes) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime readyDateTime = LocalDateTime.parse(getReadyDateTime(), formatter);
         LocalDateTime currentTime = LocalDateTime.now();
@@ -332,15 +339,17 @@ public class Order {
         // Retorna true si han pasado más de 30 minutos
         return minutesBetween > minutes;
     }
-  
+
     public boolean isCancelableForBussines() {
         return timePassedSinceReadyTime(30);
 
     }
-    
-    /***
+
+    /**
+     * *
      * Return the storable representation of this order
-     * @return 
+     *
+     * @return
      */
     public StorableOrder getStorableOrder() {
         return new StorableOrder(this);

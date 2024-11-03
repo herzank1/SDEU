@@ -4,6 +4,7 @@
  */
 package com.deliveryexpress.sdeu.session;
 
+import com.deliveryexpress.sdeu.objects.AccountType;
 import com.deliveryexpress.sdeu.objects.Bussines;
 import com.deliveryexpress.sdeu.objects.Customer;
 import com.deliveryexpress.sdeu.objects.Delivery;
@@ -81,8 +82,8 @@ public class UserSession {
     }
 
     public Delivery getDelivery() {
-        if (this.account instanceof Delivery) {
-            return (Delivery) this.getAccount();
+        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.DELIVERY)) {
+            return new Delivery(this.account);
         } else {
             return null;
         }
@@ -91,29 +92,57 @@ public class UserSession {
 
     public Bussines getBussines() {
 
-        if (this.account instanceof Bussines) {
-            return (Bussines) this.getAccount();
+      if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.DELIVERY)) {
+            return new Bussines(this.account);
         } else {
             return null;
         }
+
     }
 
     public Moderator getModerator() {
 
-        if (this.account instanceof Moderator) {
-            return (Moderator) this.getAccount();
+        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.MODERATOR)) {
+            return new Moderator(this.account);
         } else {
             return null;
         }
+
     }
 
     public Customer getCustomer() {
-
-        if (this.account instanceof Customer) {
-            return (Customer) this.getAccount();
+        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.CUSTOMER)) {
+            return new Customer(this.account);
         } else {
             return null;
         }
+
     }
+    
+     // Método genérico para deserializar a un tipo específico
+    private <T> T deserializeAccount(Object accountObject, Class<T> clazz) {
+        Gson gson = new Gson();
+        
+        // Serializa el objeto a JSON
+        String json = gson.toJson(accountObject);
+        
+        // Deserializa el JSON al tipo especificado
+        return gson.fromJson(json, clazz);
+    }
+    
+    // Método que usa deserializeAccount
+    /***
+     * Usarse para deseralizar correctamente account
+     * @param <T>
+     * @param clazz
+     * @return 
+     */
+    public <T> T getAccountAs(Class<T> clazz) {
+        if (this.account != null) {
+            return deserializeAccount(this.account, clazz);
+        }
+        return null;
+    }
+
 
 }

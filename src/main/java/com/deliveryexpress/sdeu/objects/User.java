@@ -4,6 +4,7 @@
  */
 package com.deliveryexpress.sdeu.objects;
 
+import com.deliveryexpress.sdeu.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -15,7 +16,6 @@ import lombok.Data;
  * @author HP
  */
 @Data
-@DatabaseTable(tableName = "users")
 public class User {
 
     @DatabaseField(id = true)
@@ -56,7 +56,7 @@ public class User {
     public User(String username, String phone, String pass, String accountType, String accountId, boolean blackList) {
         this.username = username;
         this.phone = phone;
-        this.pass = pass;
+        this.pass =StringUtils.toSHA256(pass);
         this.accountType = accountType;
         this.accountId = accountId;
         this.blackList = blackList;

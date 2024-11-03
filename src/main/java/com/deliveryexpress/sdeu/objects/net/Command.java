@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.StringUtils;
 import com.google.gson.annotations.Expose;
+import java.util.UUID;
 
 /**
  *
@@ -19,6 +20,9 @@ import com.google.gson.annotations.Expose;
  */
 @Data
 public class Command {
+    
+    @Expose
+    String id;
 
     /*Id de la session*/
     @Expose
@@ -32,6 +36,7 @@ public class Command {
 
     public Command() {
 
+        this.id = UUID.randomUUID().toString();
         this.sessionId = sessionId;
 
         params = new ArrayList<>();
@@ -43,6 +48,7 @@ public class Command {
         try {
             // Deserializa el jsonString en este objeto Command
             Command commandFromJson = gson.fromJson(jsonString, Command.class);
+            this.id = commandFromJson.getId();
             this.sessionId = commandFromJson.getSessionId();
             this.command = commandFromJson.getCommand();
             this.params = commandFromJson.getParams();
