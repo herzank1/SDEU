@@ -4,7 +4,7 @@
  */
 package com.deliveryexpress.sdeu.objects.contability;
 
-import com.deliveryexpress.sdeu.database.SqliteDataBaseInteraction;
+
 import com.deliveryexpress.sdeu.utils.DateUtils;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -55,24 +55,6 @@ public class Transacction {
         this.ref = ref;
     }
 
-    public void execute() {
-        try {
 
-            BalanceAccount bfrom = SqliteDataBaseInteraction.balanceAccountsDao.read(from);
-            BalanceAccount bto = SqliteDataBaseInteraction.balanceAccountsDao.read(to);
-
-            bfrom.setBalance(bfrom.getBalance() - this.mount);
-            bto.setBalance(bto.getBalance() + this.mount);
-
-            SqliteDataBaseInteraction.balanceAccountsDao.update(bfrom);
-            SqliteDataBaseInteraction.balanceAccountsDao.update(bto);
-
-            SqliteDataBaseInteraction.transacctionsDao.create(this);
-
-        } catch (Exception ex) {
-            Logger.getLogger(Transacction.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
 
 }

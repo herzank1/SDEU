@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.database;
+package com.deliveryexpress.sdeu.sqlitedatabase;
 
 /**
  * Esta clase contiene las funciones necesarias para verificar si las clases han sido modificadas,
@@ -24,22 +24,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TableValidator {
+
     
-    public static <T> void verifyTable(GenericDao dao, Class<T> clazz) {
-        
-        System.out.println("validando tabla..."+dao.getTableName());
-        if (!verifyTableColumns(dao, clazz)) {
-            addMissingColumns(dao, clazz);
+    
+     static void verifyTable(DbConection connectionSource, GenericDao<?, ?> dao, Class<?> clazz) {
+    
+     System.out.println("validando tabla..."+dao.getTableName());
+        if (!verifyTableColumns(connectionSource,dao, clazz)) {
+            addMissingColumns(connectionSource,dao, clazz);
         }
 
-    }
+     }
+    
+ 
 
     // Método principal que verifica si las columnas de la clase coinciden con las de la tabla en la base de datos
-    private static <T> boolean verifyTableColumns(GenericDao dao, Class<T> clazz) {
+    private static <T> boolean verifyTableColumns(DbConection connectionSource,GenericDao dao, Class<T> clazz) {
         try {
             Set<String> classFields = getClassFields(clazz);
             System.out.println("Columnas en la classe: " + classFields.toString());
-            Set<String> tableColumns = getTableColumns(dao);
+            Set<String> tableColumns = getTableColumns(connectionSource,dao);
             System.out.println("Columnas en la tabla: " + classFields.toString());
 
             return classFields.equals(tableColumns);
@@ -50,15 +54,15 @@ public class TableValidator {
         }
     }
     
-        private static <T> void addMissingColumns(GenericDao dao, Class<T> clazz) {
+        private static <T> void addMissingColumns(DbConection connectionSource,GenericDao dao, Class<T> clazz) {
         try {
-            Set<String> tableColumns = getTableColumns(dao);
+            Set<String> tableColumns = getTableColumns(connectionSource,dao);
             Set<String> classFields = getClassFields(clazz);
 
             // Compara las columnas de la clase con las columnas de la tabla
             for (String field : classFields) {
                 if (!tableColumns.contains(field)) {
-                    addColumn(dao.getTableName(), field);
+                    addColumn(connectionSource,dao.getTableName(), field);
                 }
             }
         } catch (Exception e) {
@@ -83,11 +87,11 @@ public class TableValidator {
     }
 
     // Método para obtener los nombres de las columnas de la tabla en la base de datos SQLite usando PRAGMA table_info
-    private static <T> Set<String> getTableColumns(GenericDao dao) throws Exception {
+    private static <T> Set<String> getTableColumns(DbConection connectionSource,GenericDao dao) throws Exception {
         Set<String> tableColumns = new HashSet<>();
         String tableName = dao.getTableName();
 
-        try (Connection conn = DriverManager.getConnection(SqliteDataBaseInteraction.getDATABASE_URL());
+        try (Connection conn = DriverManager.getConnection(connectionSource.getUrl());
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tableName + ")")) {
             while (rs.next()) {
@@ -99,10 +103,10 @@ public class TableValidator {
     }
     
     // Método para agregar una nueva columna a la tabla
-    private static void addColumn(String tableName, String columnName) {
+    private static void addColumn(DbConection connectionSource,String tableName, String columnName) {
         String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " TEXT"; // Cambia el tipo según lo necesites
 
-        try (Connection conn = DriverManager.getConnection(SqliteDataBaseInteraction.getDATABASE_URL());
+        try (Connection conn = DriverManager.getConnection(connectionSource.getUrl());
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("Columna " + columnName + " agregada a la tabla " + tableName);
@@ -142,4 +146,6 @@ public class TableValidator {
         }
         return null; // Si el campo no tiene la anotación, devolver null
     }
+
+   
 }

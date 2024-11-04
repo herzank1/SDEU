@@ -20,10 +20,11 @@ import java.util.UUID;
  */
 @Data
 public class Command {
-    
+
+    @Expose
+    String endpoint;
     @Expose
     String id;
-
     /*Id de la session*/
     @Expose
     String sessionId;
@@ -38,6 +39,7 @@ public class Command {
 
         this.id = UUID.randomUUID().toString();
         this.sessionId = sessionId;
+        this.endpoint = EndPoints.DEFAULT;
 
         params = new ArrayList<>();
     }
@@ -48,6 +50,7 @@ public class Command {
         try {
             // Deserializa el jsonString en este objeto Command
             Command commandFromJson = gson.fromJson(jsonString, Command.class);
+            this.endpoint = commandFromJson.endpoint;
             this.id = commandFromJson.getId();
             this.sessionId = commandFromJson.getSessionId();
             this.command = commandFromJson.getCommand();

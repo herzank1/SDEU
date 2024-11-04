@@ -80,10 +80,21 @@ public class UserSession {
         return this.user.getAccountId();
 
     }
+    
+   
 
+    /***
+     * Safe casting of account eve if it was sent trhou json 
+     * @return 
+     */
     public Delivery getDelivery() {
-        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.DELIVERY)) {
-            return new Delivery(this.account);
+
+        if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.DELIVERY)) {
+            try {
+                return (Delivery) this.account;
+            } catch (Exception e) {
+                return getAccountAs(Delivery.class);
+            }
         } else {
             return null;
         }
@@ -92,8 +103,13 @@ public class UserSession {
 
     public Bussines getBussines() {
 
-      if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.DELIVERY)) {
-            return new Bussines(this.account);
+     
+        if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.BUSSINES)) {
+            try {
+                return (Bussines) this.account;
+            } catch (Exception e) {
+                return getAccountAs(Bussines.class);
+            }
         } else {
             return null;
         }
@@ -102,8 +118,12 @@ public class UserSession {
 
     public Moderator getModerator() {
 
-        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.MODERATOR)) {
-            return new Moderator(this.account);
+          if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.MODERATOR)) {
+            try {
+                return (Moderator) this.account;
+            } catch (Exception e) {
+                return getAccountAs(Moderator.class);
+            }
         } else {
             return null;
         }
@@ -111,8 +131,12 @@ public class UserSession {
     }
 
     public Customer getCustomer() {
-        if (this.getAccount() != null&&this.user.getAccountType().equals(AccountType.CUSTOMER)) {
-            return new Customer(this.account);
+          if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.CUSTOMER)) {
+            try {
+                return (Customer) this.account;
+            } catch (Exception e) {
+                return getAccountAs(Customer.class);
+            }
         } else {
             return null;
         }

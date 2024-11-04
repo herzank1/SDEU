@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.database;
+package com.deliveryexpress.sdeu.sqlitedatabase;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -26,7 +26,7 @@ public class GenericDao<T, ID> {
 
     public GenericDao(ConnectionSource connectionSource, Class<T> clazz) throws SQLException{
         this.clazz = clazz;
-            dao = DaoManager.createDao(connectionSource, clazz);
+        dao = DaoManager.createDao(connectionSource, clazz);
         
     }
 
