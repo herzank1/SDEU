@@ -8,6 +8,7 @@ import com.deliveryexpress.sdeu.objects.net.responses.GetOrdersResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetSessionResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketListener;
+import com.google.gson.JsonObject;
 
 /**
  *
@@ -15,14 +16,16 @@ import com.deliveryexpress.sdeu.objects.net.socketclient.SocketListener;
  */
 public interface ResponseListener {
     
+    void onResponseReceive(JsonObject toJsonObject);
+    
     void onCurrentsOrderReceive(GetOrdersResponse getOrdersResponse);
     
     void onFinishedOrderReceive(GetOrdersResponse getOrdersResponse);
    
     
-    void onLogginWithSessionId(GetSessionResponse getSessionResponse);
+    void onLogginWithSessionIdResponse(GetSessionResponse getSessionResponse);
     
-    void onLogginSuccess(GetSessionResponse getSessionResponse);
+    void onLogginResponse(GetSessionResponse getSessionResponse);
     
    // void onMessageReceived();
     

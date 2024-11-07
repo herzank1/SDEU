@@ -16,6 +16,7 @@ import com.deliveryexpress.sdeu.objects.net.commands.ModeratorNewUserAccountComm
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketClient;
 import com.deliveryexpress.sdeu.objects.orders.Order;
+import com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer;
 
 /**
  *
@@ -113,6 +114,7 @@ public class ModeratorMethods extends DefaultMethods {
     public static   void updateObjectInDB(Object object, Class clazz) {
 
         ModeratorUpdateObjectCommand command = new ModeratorUpdateObjectCommand(object,clazz);
+
         SocketClient.execute(command);
 
     }

@@ -17,7 +17,18 @@ import okio.ByteString;
  */
 public class SocketListener extends WebSocketListener {
     
-     private static final int NORMAL_CLOSURE_STATUS = 1000;
+     private final int NORMAL_CLOSURE_STATUS = 1000;
+     Tigger tiger;
+
+    public SocketListener(Tigger tiger) {
+        super();
+        this.tiger = tiger;
+                
+                
+                
+    }
+     
+     
      
         @Override
     public void onOpen(WebSocket webSocket, Response response) {
@@ -34,7 +45,7 @@ public class SocketListener extends WebSocketListener {
         if(SocketClient.latchMap.containsKey(id)){
             SocketClient.responseMap.put(id,obj);
         }else{
-        Tigger.execute(obj);
+        tiger.execute(obj);
         }
      
         System.out.println("WebSocket Mensaje recibido: " + text);
@@ -68,7 +79,7 @@ public class SocketListener extends WebSocketListener {
             try {
                 System.out.println("Intentando reconectar...");
                 Thread.sleep(5000); // Esperar 2 segundos antes de intentar de nuevo
-                SocketClient.init(SocketClient.SESSION_ID,SocketClient.SERVER_IP);
+                SocketClient.init(SocketClient.SESSION_ID,SocketClient.SERVER_IP,SocketClient.tiger);
                 return; // Salir si la reconexión es exitosa
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Manejo de interrupción

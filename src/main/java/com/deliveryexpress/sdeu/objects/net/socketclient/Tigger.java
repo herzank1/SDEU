@@ -14,82 +14,126 @@ import com.deliveryexpress.sdeu.objects.net.socketclient.interfaces.BussinesResp
 import com.deliveryexpress.sdeu.objects.net.socketclient.interfaces.DeliveryResponseListener;
 import com.deliveryexpress.sdeu.objects.net.socketclient.interfaces.ModeratorResponseListener;
 import com.google.gson.JsonObject;
+import lombok.Data;
 
 /**
  *
  * @author DeliveryExpress
+ * Tigger es el disparador de todos los eventos de los usuarios
+ * los listeners personalizados implementan funciones basicas las cuales ya estan en el  swich
+ * cualquier comando que no se encuentre en el swicth se lanzara como  void onResponseReceive(JsonObject toJsonObject);
  */
-class Tigger {
+@Data
+public class Tigger {
     
-    private static BussinesResponseListener brListener;
-    private static DeliveryResponseListener drListener;
-    private static ModeratorResponseListener modListener;
+    private  BussinesResponseListener brListener;
+    private  DeliveryResponseListener drListener;
+    private  ModeratorResponseListener modListener;
 
-    static void execute(JsonObject obj) {
-     
-        
-        switch (obj.get("command").getAsString()) {
+void execute(JsonObject obj) {
+    switch (obj.get("command").getAsString()) {
 
-            case "loggin":
-                GetSessionResponse getSessionResponse = SocketClient.gson.fromJson(obj, GetSessionResponse.class);
-                brListener.onLogginSuccess(getSessionResponse);
-                
-                drListener.onLogginSuccess(getSessionResponse);
-                break;
+        case "loggin":
+            GetSessionResponse getSessionResponse = SocketClient.gson.fromJson(obj, GetSessionResponse.class);
+            if (brListener != null) {
+                brListener.onLogginResponse(getSessionResponse);
+            }
+            if (drListener != null) {
+                drListener.onLogginResponse(getSessionResponse);
+            }
+            
+            if (modListener != null) {
+                modListener.onLogginResponse(getSessionResponse);
+            }
+            break;
 
-            case "loggingWithSessionId":
-                getSessionResponse = SocketClient.gson.fromJson(obj, GetSessionResponse.class);
-                brListener.onLogginWithSessionId(getSessionResponse);
-                
-                drListener.onLogginSuccess(getSessionResponse);
-                break;
+        case "loggingWithSessionId":
+            getSessionResponse = SocketClient.gson.fromJson(obj, GetSessionResponse.class);
+            if (brListener != null) {
+                brListener.onLogginWithSessionIdResponse(getSessionResponse);
+            }
+            if (drListener != null) {
+                drListener.onLogginWithSessionIdResponse(getSessionResponse);
+            }
+            
+            if (modListener != null) {
+                modListener.onLogginWithSessionIdResponse(getSessionResponse);
+            }
+            break;
 
-            case "updateOrder":
-            case "getCurrentOrders":
-
-                GetOrdersResponse rOrders = SocketClient.gson.fromJson(obj, GetOrdersResponse.class);
+        case "updateOrder":
+        case "getCurrentOrders":
+            GetOrdersResponse rOrders = SocketClient.gson.fromJson(obj, GetOrdersResponse.class);
+            if (brListener != null) {
                 brListener.onCurrentsOrderReceive(rOrders);
-                
+            }
+            if (drListener != null) {
                 drListener.onCurrentsOrderReceive(rOrders);
+            }
+            
+             if (modListener != null) {
+                modListener.onCurrentsOrderReceive(rOrders);
+            }
+            break;
 
-                break;
-
-            case "getFinishedOrders":
-                rOrders = SocketClient.gson.fromJson(obj, GetOrdersResponse.class);
+        case "getFinishedOrders":
+            rOrders = SocketClient.gson.fromJson(obj, GetOrdersResponse.class);
+            if (brListener != null) {
                 brListener.onFinishedOrderReceive(rOrders);
-                
+            }
+            if (drListener != null) {
                 drListener.onFinishedOrderReceive(rOrders);
-                break;
+            }
+            
+             if (modListener != null) {
+                modListener.onFinishedOrderReceive(rOrders);
+            }
+            break;
 
-            case "addNewOrder":
-                Response response = SocketClient.gson.fromJson(obj, Response.class);
+        case "addNewOrder":
+            Response response = SocketClient.gson.fromJson(obj, Response.class);
+            if (brListener != null) {
                 brListener.onNewOrderConfirmation(response);
+            }
+            break;
 
-                break;
-
-            case "orderAsigned":
-                GetOrderResponse getOrderResponse = SocketClient.gson.fromJson(obj, GetOrderResponse.class);
+        case "orderAsigned":
+            GetOrderResponse getOrderResponse = SocketClient.gson.fromJson(obj, GetOrderResponse.class);
+            if (drListener != null) {
                 drListener.onNewOrderReceived(getOrderResponse);
-                break;
-                
-            case "getConectedDeliveries":
+            }
+            break;
 
-                GetDeliveriesResponse getDeliveriesResponse = SocketClient.gson.fromJson(obj, GetDeliveriesResponse.class);
+        case "getConectedDeliveries":
+            GetDeliveriesResponse getDeliveriesResponse = SocketClient.gson.fromJson(obj, GetDeliveriesResponse.class);
+            if (modListener != null) {
                 modListener.onGetConnectedDeliveries(getDeliveriesResponse);
+            }
+            break;
 
-                break;
-
-            case "getSessions":
-
-                GetSessionsResponse getSessionsResponse = SocketClient.gson.fromJson(obj, GetSessionsResponse.class);
+        case "getSessions":
+            GetSessionsResponse getSessionsResponse = SocketClient.gson.fromJson(obj, GetSessionsResponse.class);
+            if (modListener != null) {
                 modListener.onGetSessions(getSessionsResponse);
-
-                break;
-
-        }
-
-    
-    
+            }
+            break;
+            
+        default:
+            
+            if (brListener != null) {
+                brListener.onResponseReceive(obj);
+            }
+            if (drListener != null) {
+                drListener.onResponseReceive(obj);
+            }
+            
+            if (modListener != null) {
+                modListener.onResponseReceive(obj);
+            }
+            
+            break;
     }
+}
+
     
 }

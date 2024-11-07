@@ -35,6 +35,8 @@ public class SocketClient {
   //private static final String SERVER_IP = "ws://192.168.0.7:8080/ws";//Local Host
  // private static final String SERVER_IP = "ws://34.71.89.3:8080/ws";
   public static  String SERVER_IP = "ws://34.71.89.3:8080/ws";
+  
+  public static Tigger tiger;
 
 
   public static ConcurrentHashMap<String, CountDownLatch> latchMap = new ConcurrentHashMap<>();
@@ -46,8 +48,8 @@ public class SocketClient {
    * @param serverIp  ws://192.168.0.7:8080/ws  or ws://34.71.89.3:8080/ws
    * @throws Exception 
    */
-    public static void init(String sessionId, String serverIp) throws Exception {
-        
+    public static void init(String sessionId, String serverIp,Tigger tigger) throws Exception {
+        tiger = tigger;
         SERVER_IP = serverIp;
         gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
@@ -60,7 +62,7 @@ public class SocketClient {
         // Crear la solicitud de conexión
         Request request = new Request.Builder().url(SERVER_IP).build();
         // Crear WebSocketListener
-        SocketListener listener = new SocketListener();
+        SocketListener listener = new SocketListener(tigger);
         // Crear la conexión WebSocket
         webSocket = client.newWebSocket(request, listener);
         // Cerrar el cliente cuando ya no sea necesario
