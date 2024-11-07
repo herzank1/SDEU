@@ -30,33 +30,18 @@ public class UserSession {
     @Expose
     private User user;/*basic user*/
     @Expose
-    private Object account;
+    private Customer customer;
+    @Expose
+    private Delivery delivery;
+    @Expose
+    private Bussines bussines;
+    @Expose
+    private Moderator moderator;
 
     /*Account of user*/
 
 
     public UserSession() {
-
-    }
-
-    /**
-     * *
-     * Use this Constructor when recive in nested objectos truount in json
-     * response
-     *
-     * @param object to serailize json next UserSession
-     */
-    public UserSession(Object object) {
-        Gson gson = new Gson();
-        // Convertimos el objeto en un String JSON y luego lo deserializamos
-        String json = gson.toJson(object);
-        UserSession session = gson.fromJson(json, UserSession.class);
-
-        // Asignamos los valores deserializados a los atributos
-        this.id = session.id;
-        this.lastUpdate = session.lastUpdate;
-        this.user = session.user;
-        this.account = session.account;
     }
 
     // Método que verifica si la sesión ha expirado
@@ -81,92 +66,6 @@ public class UserSession {
 
     }
     
-   
-
-    /***
-     * Safe casting of account eve if it was sent trhou json 
-     * @return 
-     */
-    public Delivery getDelivery() {
-
-        if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.DELIVERY)) {
-            try {
-                return (Delivery) this.account;
-            } catch (Exception e) {
-                return getAccountAs(Delivery.class);
-            }
-        } else {
-            return null;
-        }
-
-    }
-
-    public Bussines getBussines() {
-
-     
-        if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.BUSSINES)) {
-            try {
-                return (Bussines) this.account;
-            } catch (Exception e) {
-                return getAccountAs(Bussines.class);
-            }
-        } else {
-            return null;
-        }
-
-    }
-
-    public Moderator getModerator() {
-
-          if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.MODERATOR)) {
-            try {
-                return (Moderator) this.account;
-            } catch (Exception e) {
-                return getAccountAs(Moderator.class);
-            }
-        } else {
-            return null;
-        }
-
-    }
-
-    public Customer getCustomer() {
-          if (this.getAccount() != null && this.user.getAccountType().equals(AccountType.CUSTOMER)) {
-            try {
-                return (Customer) this.account;
-            } catch (Exception e) {
-                return getAccountAs(Customer.class);
-            }
-        } else {
-            return null;
-        }
-
-    }
-    
-     // Método genérico para deserializar a un tipo específico
-    private <T> T deserializeAccount(Object accountObject, Class<T> clazz) {
-        Gson gson = new Gson();
-        
-        // Serializa el objeto a JSON
-        String json = gson.toJson(accountObject);
-        
-        // Deserializa el JSON al tipo especificado
-        return gson.fromJson(json, clazz);
-    }
-    
-    // Método que usa deserializeAccount
-    /***
-     * Usarse para deseralizar correctamente account
-     * @param <T>
-     * @param clazz
-     * @return 
-     */
-    public <T> T getAccountAs(Class<T> clazz) {
-        if (this.account != null) {
-            return deserializeAccount(this.account, clazz);
-        }
-        return null;
-    }
-
+  
 
 }

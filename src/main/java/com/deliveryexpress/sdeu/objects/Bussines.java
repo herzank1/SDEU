@@ -7,6 +7,7 @@ package com.deliveryexpress.sdeu.objects;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
+import java.util.UUID;
 import lombok.Data;
 
 /**
@@ -44,6 +45,7 @@ public class Bussines {
     private long conected;
 
     public Bussines() {
+         this.id = UUID.randomUUID().toString();
     }
     
     

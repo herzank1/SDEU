@@ -41,10 +41,32 @@ public class Transacction {
     @DatabaseField
     @Expose
     String ref;
+     @DatabaseField
+    @Expose
+    String msg;
 
     public Transacction() {
+
+        this.id = UUID.randomUUID().toString();
+        this.from = "";
+        this.to = "";
+        this.mount = 0f;
+        this.date = DateUtils.now();
+        this.concept = "null";
+        this.ref = "";
+        this.msg = "";
     }
 
+    /***
+     * 
+     * @param id
+     * @param from
+     * @param to
+     * @param mount
+     * @param concept aqui se almacena la cuenta asociada a este concepto, la cual 
+     * se debera usar cuando el usuario relize un pago a la plataforma y esta pueda redirigirse ala cuenta asociada
+     * @param ref 
+     */
     public Transacction(String id, String from, String to, float mount, String concept, String ref) {
         this.id = UUID.randomUUID().toString();
         this.from = from;
@@ -53,6 +75,7 @@ public class Transacction {
         this.date = DateUtils.now();
         this.concept = concept;
         this.ref = ref;
+         this.msg = "";
     }
 
 

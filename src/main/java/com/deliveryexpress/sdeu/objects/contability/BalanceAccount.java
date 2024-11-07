@@ -5,6 +5,7 @@
 package com.deliveryexpress.sdeu.objects.contability;
 
 import com.j256.ormlite.field.DatabaseField;
+import java.util.UUID;
 import lombok.Data;
 
 /**
@@ -19,5 +20,22 @@ public class BalanceAccount {
     private String id;
     @DatabaseField
     private float balance;
+
+    public BalanceAccount() {
+        this.id = UUID.randomUUID().toString();
+        this.balance = 0f;
+    }
+    
+     public BalanceAccount( float balance) {
+        this.id = UUID.randomUUID().toString();
+        this.balance = balance;
+    }
+
+    public BalanceAccount(String id, float balance) {
+        this.id = id;
+        this.balance = balance;
+    }
+    
+    
 
 }

@@ -8,6 +8,7 @@ import com.deliveryexpress.sdeu.objects.location.Position;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
+import java.util.UUID;
 import lombok.Data;
 
 /**
@@ -65,6 +66,7 @@ public class Delivery {
     }
 
     public Delivery() {
+         this.id = UUID.randomUUID().toString();
     }
     
     

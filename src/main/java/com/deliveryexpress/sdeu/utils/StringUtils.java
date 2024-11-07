@@ -6,6 +6,8 @@ package com.deliveryexpress.sdeu.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -56,6 +58,11 @@ public class StringUtils {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("SHA-256 algorithm not found", e);
         }
+    }
+    
+      public static JsonObject toJsonObject(String jsonString) {
+        // Convertir el JSON string en un JsonObject
+        return JsonParser.parseString(jsonString).getAsJsonObject();
     }
     
   

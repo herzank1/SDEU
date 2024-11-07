@@ -15,8 +15,9 @@ import com.deliveryexpress.sdeu.objects.contability.Transacction;
 import com.deliveryexpress.sdeu.objects.location.Position;
 import com.deliveryexpress.sdeu.objects.metadata.Ratings;
 import com.deliveryexpress.sdeu.objects.metadata.Tags;
-import com.deliveryexpress.sdeu.objects.net.Command;
-import com.deliveryexpress.sdeu.objects.net.Response;
+import com.deliveryexpress.sdeu.objects.net.commands.Command;
+import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
+import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
 import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.newRegisterUser;
 import com.deliveryexpress.sdeu.utils.StringUtils;
@@ -66,7 +67,8 @@ public class DbBalancer {
     public static void createGenesisAccounts() {
         Command command = new Command();
         command.setCommand("registerUser");
-
+        
+     
       
         Moderator root = Accounts.Moderators.Moderators().read("root");
         System.out.println("Verificando root moderator...");
@@ -178,6 +180,39 @@ public class DbBalancer {
 
           
           
+
+    }
+    
+    public static boolean updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
+
+        try {
+            String clazzName = moderatorUpdateObjectCommand.getClazzName();
+
+            if (clazzName.equals(Bussines.class.getName())) {
+                Bussines deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Bussines.class);
+                Accounts.Bussiness.Bussiness().update(deserializeObject);
+
+            } else if (clazzName.equals(Delivery.class.getName())) {
+
+                Delivery deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Delivery.class);
+                Accounts.Deliveries.Deliveries().update(deserializeObject);
+
+            } else if (clazzName.equals(Moderator.class.getName())) {
+
+                Moderator deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Moderator.class);
+                Accounts.Moderators.Moderators().update(deserializeObject);
+
+            } else if (clazzName.equals(User.class.getName())) {
+
+                User deserializeObject = moderatorUpdateObjectCommand.deserializeObject(User.class);
+                Accounts.Users().update(deserializeObject);
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
     }
 
@@ -418,7 +453,7 @@ public class DbBalancer {
 
             }
 
-            public void execute(Transacction transacction) {
+            public static void execute(Transacction transacction) {
                 try {
 
                     BalanceAccount bfrom = Contability.BalancesAccounts.BalancesAccounts().read(transacction.getFrom());

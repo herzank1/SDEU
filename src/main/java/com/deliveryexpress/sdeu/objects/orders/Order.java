@@ -340,8 +340,16 @@ public class Order {
         return minutesBetween > minutes;
     }
 
+    /***
+     * 
+     * @return verdadero si la orden esta en preparacion/listo, no tiene repartidor y han pasado 20 minutos
+     */
     public boolean isCancelableForBussines() {
-        return timePassedSinceReadyTime(30);
+        if (this.status.equals(OrderStatus.PREPARANDO)
+                || this.status.equals(OrderStatus.LISTO) && this.getDelivery() != null) {
+            return timePassedSinceReadyTime(20);
+        }
+        return false;
 
     }
 

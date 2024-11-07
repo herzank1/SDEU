@@ -2,14 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.objects.net;
+package com.deliveryexpress.sdeu.objects.net.commands;
 
+import com.deliveryexpress.sdeu.objects.net.EndPoints;
+import com.deliveryexpress.sdeu.objects.net.Param;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.StringUtils;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import java.util.UUID;
 
@@ -43,6 +46,8 @@ public class Command {
 
         params = new ArrayList<>();
     }
+    
+   
 
     // Constructor que acepta un jsonString
     public Command(String jsonString) {
@@ -74,6 +79,18 @@ public class Command {
         return null; // Retorna null si no se encuentra
     }
 
+    
+    
+    /**
+     * *
+     *
+     *
+     * @return
+     */
+    public boolean validate() {
+        return true;
+    }
+;
    
 
 }
