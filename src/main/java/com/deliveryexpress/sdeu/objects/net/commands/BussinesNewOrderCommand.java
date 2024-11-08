@@ -5,6 +5,7 @@
 package com.deliveryexpress.sdeu.objects.net.commands;
 
 import com.deliveryexpress.sdeu.objects.orders.Order;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BussinesNewOrderCommand extends Command{
+     @Expose
     Order order;
 
     public BussinesNewOrderCommand(Order order) {

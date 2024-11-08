@@ -5,6 +5,7 @@
 package com.deliveryexpress.sdeu.objects.net.commands;
 
 import com.deliveryexpress.sdeu.objects.location.Position;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,10 +16,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BussinesCotaizerCommand extends Command {
-    
+     @Expose
     String fromAddress;
+      @Expose
     String toAddress;
+       @Expose
     String fromPosition;
+        @Expose
     String toPosition;
 
     public BussinesCotaizerCommand(String fromAddress, String toAddress) {

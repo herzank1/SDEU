@@ -14,9 +14,12 @@ import com.deliveryexpress.sdeu.objects.net.Param;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorNewUserAccountCommand;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
+import com.deliveryexpress.sdeu.objects.net.responses.ModeratorUpdateObjectResponse;
+import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketClient;
 import com.deliveryexpress.sdeu.objects.orders.Order;
 import com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer;
+import com.google.gson.JsonObject;
 
 /**
  *
@@ -41,6 +44,17 @@ public class ModeratorMethods extends DefaultMethods {
         ModeratorNewUserAccountCommand mnuaCommand = new ModeratorNewUserAccountCommand(user,moderator,balanceAccount);
         SocketClient.execute(mnuaCommand);
     
+    }
+    
+    public static Response assignOrderToDelivery(String orderId, String deliveryId) {
+
+        Command command = new Command();
+        command.setCommand("orderAsigned");
+        command.addParam(new Param("oid", orderId));
+        command.addParam(new Param("did", deliveryId));
+        JsonObject execute_R = SocketClient.execute_R(command,2000);
+        Response gcResponse = SocketClient.gson.fromJson(execute_R, Response.class);
+        return gcResponse;
     }
   
     
@@ -111,6 +125,7 @@ public class ModeratorMethods extends DefaultMethods {
         SocketClient.execute(command);
     }
 
+    @Deprecated
     public static   void updateObjectInDB(Object object, Class clazz) {
 
         ModeratorUpdateObjectCommand command = new ModeratorUpdateObjectCommand(object,clazz);
@@ -131,6 +146,16 @@ public class ModeratorMethods extends DefaultMethods {
         Command command = new Command();
         command.setCommand("getSessions");
         SocketClient.execute(command);
+    }
+    
+      public static ModeratorUpdateObjectResponse updateObjectInDb(Object obj, Class clazz) {
+
+        ModeratorUpdateObjectCommand command = new ModeratorUpdateObjectCommand(obj,clazz);
+        JsonObject executeR = SocketClient.execute_R(command, 2000);
+        ModeratorUpdateObjectResponse muoResponse = SocketClient.gson.fromJson(executeR, ModeratorUpdateObjectResponse.class);
+
+        return muoResponse;
+
     }
 
     

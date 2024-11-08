@@ -2,34 +2,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.deliveryexpress.sdeu.objects.net.commands;
+package com.deliveryexpress.sdeu.objects.net.responses;
 
-import com.deliveryexpress.sdeu.objects.orders.Order;
+import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  *
  * @author DeliveryExpress
  */
-@Data
-   @EqualsAndHashCode(callSuper = true) 
-public class ModeratorUpdateObjectCommand extends Command{
-    @Expose
+public class ModeratorUpdateObjectResponse extends Response {
+ @Expose
     Object object;
-     @Expose
+  @Expose
     String clazzName;
 
-    public ModeratorUpdateObjectCommand(Object object,Class clazz) {
-        super();
+    public ModeratorUpdateObjectResponse(Command command, String status, Object object, Class clazz) {
+        super(command, status);
         super.setCommand("updateObjectInDB");
         this.object = object;
         this.clazzName = clazz.getName(); // Guardamos el nombre de la clase
     }
     
-    public Class<?> getClazz() {
+     public Class<?> getClazz() {
     try {
         return Class.forName(clazzName);
     } catch (ClassNotFoundException e) {
@@ -44,6 +40,5 @@ public class ModeratorUpdateObjectCommand extends Command{
         // Convertimos `object` a JSON y luego deserializamos como el tipo especificado
         return gson.fromJson(gson.toJson(object), type);
     }
-    
-    
+
 }

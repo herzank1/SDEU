@@ -4,6 +4,7 @@
  */
 package com.deliveryexpress.sdeu.objects.net.commands;
 
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,7 +15,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DeliveryOrderConfirmationCommand extends Command {
+     @Expose
     String orderId;
+      @Expose
     boolean confirm;
 
     public DeliveryOrderConfirmationCommand(String orderId, boolean confirm) {

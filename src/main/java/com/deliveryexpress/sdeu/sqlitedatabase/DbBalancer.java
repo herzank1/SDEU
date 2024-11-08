@@ -17,6 +17,7 @@ import com.deliveryexpress.sdeu.objects.metadata.Ratings;
 import com.deliveryexpress.sdeu.objects.metadata.Tags;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
+import com.deliveryexpress.sdeu.objects.net.responses.ModeratorUpdateObjectResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
 import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.newRegisterUser;
@@ -183,7 +184,7 @@ public class DbBalancer {
 
     }
     
-    public static boolean updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
+    public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
 
         try {
             String clazzName = moderatorUpdateObjectCommand.getClazzName();
@@ -208,10 +209,12 @@ public class DbBalancer {
                 Accounts.Users().update(deserializeObject);
             }
 
-            return false;
+            return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand,"success",moderatorUpdateObjectCommand.getObject()
+            ,moderatorUpdateObjectCommand.getClass());
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+           return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand,"fail",moderatorUpdateObjectCommand.getObject()
+            ,moderatorUpdateObjectCommand.getClass());
         }
 
     }

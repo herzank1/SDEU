@@ -5,6 +5,7 @@
 package com.deliveryexpress.sdeu.objects.net.commands;
 
 import com.deliveryexpress.sdeu.objects.location.Position;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,9 +16,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DeliveryChangeOrderStatusCommand extends Command{
+     @Expose
     String orderId;
+      @Expose
     String status;
+       @Expose
     String arrivedTo;
+        @Expose
     String position;
     
     /***

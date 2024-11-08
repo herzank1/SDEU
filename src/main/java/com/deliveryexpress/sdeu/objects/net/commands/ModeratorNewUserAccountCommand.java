@@ -10,6 +10,7 @@ import com.deliveryexpress.sdeu.objects.Delivery;
 import com.deliveryexpress.sdeu.objects.Moderator;
 import com.deliveryexpress.sdeu.objects.User;
 import com.deliveryexpress.sdeu.objects.contability.BalanceAccount;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,11 +21,17 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ModeratorNewUserAccountCommand extends Command{
+     @Expose
     User user;
+      @Expose
     Bussines bussines;
+       @Expose
     Delivery deliveri;
+        @Expose
     Moderator moderator;
+         @Expose
     Customer customer;
+          @Expose
     BalanceAccount balanceAccount;
 
     public ModeratorNewUserAccountCommand() {
