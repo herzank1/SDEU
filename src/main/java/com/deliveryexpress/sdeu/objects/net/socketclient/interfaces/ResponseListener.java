@@ -6,8 +6,6 @@ package com.deliveryexpress.sdeu.objects.net.socketclient.interfaces;
 
 import com.deliveryexpress.sdeu.objects.net.responses.GetOrdersResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetSessionResponse;
-import com.deliveryexpress.sdeu.objects.net.responses.Response;
-import com.deliveryexpress.sdeu.objects.net.socketclient.SocketListener;
 import com.google.gson.JsonObject;
 
 /**

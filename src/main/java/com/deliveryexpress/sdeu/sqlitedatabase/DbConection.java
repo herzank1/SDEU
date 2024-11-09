@@ -4,7 +4,6 @@
  */
 package com.deliveryexpress.sdeu.sqlitedatabase;
 
-import com.deliveryexpress.sdeu.objects.User;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
@@ -47,12 +46,7 @@ public class DbConection {
             this.url = "jdbc:sqlite:"+fileName;
             connectionSource = new JdbcConnectionSource(this.url );
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-           ex.printStackTrace();
+        } catch (SQLException | ClassNotFoundException | IOException ex) {
         }
     }
     

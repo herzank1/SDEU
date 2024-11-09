@@ -64,5 +64,10 @@ public class ModeratorNewUserAccountCommand extends Command{
     }
 
     
+     @Override
+   public boolean validate() {
+        return true;
+    }
+    
     
 }

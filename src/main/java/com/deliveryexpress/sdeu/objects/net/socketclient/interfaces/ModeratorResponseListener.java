@@ -5,13 +5,12 @@
 package com.deliveryexpress.sdeu.objects.net.socketclient.interfaces;
 
 import com.deliveryexpress.sdeu.objects.net.responses.GetDeliveriesResponse;
-import com.deliveryexpress.sdeu.objects.net.responses.GetOrderResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetSessionsResponse;
-import com.deliveryexpress.sdeu.objects.net.responses.Response;
 
 /**
  *
  * @author DeliveryExpress
+ * metodos implementados no son execute_R
  */
 public interface ModeratorResponseListener extends ResponseListener{
     

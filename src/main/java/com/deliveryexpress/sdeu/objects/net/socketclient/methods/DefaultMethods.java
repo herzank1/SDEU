@@ -5,9 +5,12 @@
 package com.deliveryexpress.sdeu.objects.net.socketclient.methods;
 
 import com.deliveryexpress.sdeu.objects.net.Param;
+import com.deliveryexpress.sdeu.objects.net.commands.ChangeOrderStatusCommand;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.net.responses.GetUserBalanceResponse;
+import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketClient;
+import com.deliveryexpress.sdeu.objects.orders.OrderStatus;
 import com.google.gson.JsonObject;
 
 /**
@@ -54,7 +57,7 @@ public class DefaultMethods {
 
     }
 
-    public static GetUserBalanceResponse getBalance_R() {
+    public static GetUserBalanceResponse getBalance() {
 
         Command command = new Command();
         command.setCommand("getBalance");
@@ -66,12 +69,54 @@ public class DefaultMethods {
     }
     
     
-     public static void getConnectionStatus() {
+    public static Response getConnectionStatus() {
+        Command command = new Command();
+        command.setCommand("getConnectionStatus");
 
-      Command command = new Command();
-      command.setCommand("getConnectionStatus");
-      SocketClient.execute(command);
+        JsonObject executeR = SocketClient.execute_R(command, 300);
+        Response gcsResponse = SocketClient.gson.fromJson(executeR, Response.class);
+        return gcsResponse;
 
     }
+
+    public static Response switchConnectionStatus() {
+        Command command = new Command();
+        command.setCommand("switchConnectionStatus");
+
+        JsonObject executeR = SocketClient.execute_R(command, 300);
+        Response scsResponse = SocketClient.gson.fromJson(executeR, Response.class);
+        return scsResponse;
+
+    }
+    
+      /***
+     * cancela una orden que no haya sido reclectada
+     * @param orderId
+     * @param reason
+     * @return true si se cambio el estado en el servidor
+     */
+    public static Response cancelOrder(String orderId,String reason) {
+
+        return changeOrderStatus(orderId, OrderStatus.CANCELADO,null,reason,null);
+    }
+
+    
+        /***
+     * cambia el estado de una orden de Bussines
+     * @param orderId
+     * @param status
+     * @param arrivedTo (Use by delivery only)
+     * @param reason
+     * @param position
+     * @return true si se cambio el estado en el servidor
+     */
+    public static Response changeOrderStatus(String orderId, String status,String arrivedTo,String reason,String position) {
+
+        ChangeOrderStatusCommand command = new ChangeOrderStatusCommand(orderId,status,arrivedTo,reason,position);
+        JsonObject executeR = SocketClient.execute_R(command, 1500);
+        Response cosResponse = SocketClient.gson.fromJson(executeR, Response.class);
+        return cosResponse;
+    }
+
 
 }

@@ -29,7 +29,6 @@ public class ModeratorUpdateObjectResponse extends Response {
     try {
         return Class.forName(clazzName);
     } catch (ClassNotFoundException e) {
-        e.printStackTrace();
         return null; // O maneja el error de otra forma
     }
 }

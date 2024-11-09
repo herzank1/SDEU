@@ -11,10 +11,11 @@ import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.net.responses.GetBussinesCotaizerResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetCustomerResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetFetchPlaceSuggestionsResponse;
-import com.deliveryexpress.sdeu.objects.net.responses.GetUserBalanceResponse;
+import com.deliveryexpress.sdeu.objects.net.responses.GetOrderResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketClient;
 import com.deliveryexpress.sdeu.objects.orders.Order;
+import com.deliveryexpress.sdeu.objects.orders.OrderStatus;
 import com.google.gson.JsonObject;
 
 /**
@@ -23,22 +24,19 @@ import com.google.gson.JsonObject;
  */
 public class BussinesMethods extends DefaultMethods {
 
-    public static void setReadyOrder(String id) {
 
-        Command command = new Command();
-        command.setCommand("setorderready");
-        command.addParam(new Param("oid", id));
-        SocketClient.execute(command);
-    }
 
-    public static void newOrder(Order order) {
+    public static GetOrderResponse newOrder(Order order) {
 
         BussinesNewOrderCommand command = new BussinesNewOrderCommand(order);
         // Ejecuta el comando en el cliente de socket
-        SocketClient.execute(command);
+        JsonObject executeR = SocketClient.execute_R(command,2000L);
+         GetOrderResponse anoResponse = SocketClient.gson.fromJson(executeR, GetOrderResponse.class);
+
+        return anoResponse;
     }
 
-    public static GetCustomerResponse getCustomer_R(String phone) {
+    public static GetCustomerResponse getCustomer(String phone) {
 
         Command command = new Command();
         command.setCommand("getCustomer");
@@ -50,7 +48,7 @@ public class BussinesMethods extends DefaultMethods {
 
     }
 
-    public static GetFetchPlaceSuggestionsResponse fetchPlaceSuggestions_R(String input) {
+    public static GetFetchPlaceSuggestionsResponse fetchPlaceSuggestions(String input) {
         Command command = new Command();
         command.setCommand("fetchPlaceSuggestions");
         command.addParam(new Param("input", input));
@@ -62,7 +60,7 @@ public class BussinesMethods extends DefaultMethods {
 
     }
 
-    public static GetBussinesCotaizerResponse cotizer_R(String fromAddress, String toAddress) {
+    public static GetBussinesCotaizerResponse cotizer(String fromAddress, String toAddress) {
 
         BussinesCotaizerCommand bcCommand = new BussinesCotaizerCommand(fromAddress, toAddress);
 
@@ -74,14 +72,19 @@ public class BussinesMethods extends DefaultMethods {
 
     }
     
-   public static void cancelOrder(Order order) {
+   
 
-      Command command = new Command();
-      command.setCommand("confirmOrderOrCancel");
-      command.addParam(new Param("oid", order.getId()));
-      command.addParam(new Param("value", "false"));
-      SocketClient.execute(command);
+    /***
+     * Inidica una orden lista para recolectar
+     * @param orderId
+     * @return true si se cambio el estado en el servidor
+     */
+    public static Response setOrderReady(String orderId) {
+
+        return changeOrderStatus(orderId, OrderStatus.LISTO,null,null,null);
     }
 
+  
+  
 
 }

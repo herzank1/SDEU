@@ -4,8 +4,8 @@
  */
 package com.deliveryexpress.sdeu.objects.net.responses;
 
-import com.deliveryexpress.sdeu.objects.location.Position;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,17 +17,26 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class GetBussinesCotaizerResponse extends Response {
 
+    @Expose
     float distancekm;
+    @Expose
     String startAddress;
+    @Expose
     String endAddress;
+    @Expose
     String startLocation;
+    @Expose
     String endLocation;
+    @Expose
     String humanReadable;
 
+    @Expose
     double baseCost;
+    @Expose
     double extraPerKm;
+    @Expose
     double extraPer10Km;
-    
+    @Expose
     double totalCost;
 
  /***

@@ -4,13 +4,11 @@
  */
 package com.deliveryexpress.sdeu.session;
 
-import com.deliveryexpress.sdeu.objects.AccountType;
 import com.deliveryexpress.sdeu.objects.Bussines;
 import com.deliveryexpress.sdeu.objects.Customer;
 import com.deliveryexpress.sdeu.objects.Delivery;
 import com.deliveryexpress.sdeu.objects.Moderator;
 import com.deliveryexpress.sdeu.objects.User;
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import lombok.Data;
 

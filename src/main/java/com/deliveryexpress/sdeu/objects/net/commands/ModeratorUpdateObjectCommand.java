@@ -4,7 +4,6 @@
  */
 package com.deliveryexpress.sdeu.objects.net.commands;
 
-import com.deliveryexpress.sdeu.objects.orders.Order;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import lombok.Data;
@@ -33,7 +32,6 @@ public class ModeratorUpdateObjectCommand extends Command{
     try {
         return Class.forName(clazzName);
     } catch (ClassNotFoundException e) {
-        e.printStackTrace();
         return null; // O maneja el error de otra forma
     }
 }

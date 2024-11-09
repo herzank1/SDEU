@@ -15,6 +15,7 @@ import lombok.Data;
 /**
  *
  * @author HP
+ * @param <T>
  */
 
 @Data
@@ -46,13 +47,14 @@ public class Response <T> {
             this.status = jsonObject.has("status") ? jsonObject.get("status").getAsString() : null;
             this.mensaje = jsonObject.has("mensaje") ? jsonObject.get("mensaje").getAsString() : null;
         } catch (JsonSyntaxException e) {
-            e.printStackTrace(); // Manejo de excepciones si el JSON no es válido
+            // Manejo de excepciones si el JSON no es válido
+            
         }
     }
     
     /***
      * 
-     * @param command head o nombre de la funcion que genero esta respuesta
+     * @param _command
      * @param status succes, fail u otro
      * @param input  cualquier tipo de objeto adjunto
      * el objeto debera deserealizarse usando exposed anotacion

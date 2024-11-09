@@ -8,8 +8,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
-import java.lang.annotation.Annotation;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +17,8 @@ import java.util.logging.Logger;
  *
  * @author HP
  * Classe generica para administrar en la base de datos los objetos o classes
+ * @param <T>
+ * @param <ID>
  */
 public class GenericDao<T, ID> {
     private final Dao<T, ID> dao;
@@ -90,7 +90,7 @@ public class GenericDao<T, ID> {
             QueryBuilder<T, ID> queryBuilder = dao.queryBuilder();
             queryBuilder.where().eq(columnName, value);
             return queryBuilder.queryForFirst(); // Devuelve el primer resultado que coincide
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return null;
         }
 

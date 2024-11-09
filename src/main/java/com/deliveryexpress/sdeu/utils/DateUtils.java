@@ -16,25 +16,23 @@ import java.util.Date;
  */
 public class DateUtils {
     
-    static final String dateformat = "yyyy-MM-dd HH:mm:ss";
+    static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
     public static String now(){
      // Obtener la fecha y hora actuales
         LocalDateTime now = LocalDateTime.now();
 
         // Definir un formato de fecha y hora
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateformat);
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         // Formatear la fecha y hora
-        String formattedDate = now.format(formatter);
-        
-        return formattedDate;
+
+        return now.format(formatter);
     
     }
     
         // Función que determina si la orden está casi lista o le faltan al menos 5 minutos
     public static boolean isOrderAlmostReady(String creationDate, int preparationMinutes) {
-       SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat); // Cambia el formato según tus necesidades
+       SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT); // Cambia el formato según tus necesidades
 
         try {
             // Convertir creationDate a objeto Date
@@ -57,7 +55,6 @@ public class DateUtils {
         return differenceInMinutes <= 5; // Retorna true si faltan 5 minutos o más tiempo ha pasado
 
         } catch (ParseException e) {
-            e.printStackTrace();
             return false; // Manejo de excepción en caso de formato de fecha incorrecto
         }
         

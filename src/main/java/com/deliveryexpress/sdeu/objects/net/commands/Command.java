@@ -11,8 +11,6 @@ import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import lombok.Data;
-import com.deliveryexpress.sdeu.utils.StringUtils;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import java.util.UUID;
 
@@ -39,9 +37,7 @@ public class Command {
     ArrayList<Param> params;
 
     public Command() {
-
         this.id = UUID.randomUUID().toString();
-        this.sessionId = sessionId;
         this.endpoint = EndPoints.DEFAULT;
 
         params = new ArrayList<>();
@@ -61,7 +57,8 @@ public class Command {
             this.command = commandFromJson.getCommand();
             this.params = commandFromJson.getParams();
         } catch (JsonSyntaxException e) {
-            e.printStackTrace(); // Manejo de excepciones si el json no es válido
+            // Manejo de excepciones si el json no es válido
+            
         }
     }
 
@@ -79,14 +76,6 @@ public class Command {
         return null; // Retorna null si no se encuentra
     }
 
-    
-    
-    /**
-     * *
-     *
-     *
-     * @return
-     */
     public boolean validate() {
         return true;
     }

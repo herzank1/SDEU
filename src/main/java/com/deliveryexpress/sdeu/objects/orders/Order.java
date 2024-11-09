@@ -8,7 +8,6 @@ package com.deliveryexpress.sdeu.objects.orders;
  *
  * @author DeliveryExpress
  */
-import com.deliveryexpress.sdeu.objects.AccountType;
 import com.deliveryexpress.sdeu.objects.Bussines;
 import com.deliveryexpress.sdeu.objects.Customer;
 import com.deliveryexpress.sdeu.objects.Delivery;
@@ -22,8 +21,6 @@ import java.util.UUID;
 import lombok.Data;
 import com.deliveryexpress.sdeu.utils.DateUtils;
 import com.google.gson.annotations.Expose;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -35,20 +32,15 @@ import java.util.TimerTask;
  * @author DeliveryExpress
  */
 @Data
-
 public class Order {
 
     @Expose
-
     private String id;
     @Expose
-
     private String creationDate;
     @Expose
-
     private String status;
     @Expose
-
     private int preparationTime;//minutes
 
     /**
@@ -68,14 +60,10 @@ public class Order {
      * ********************Nested Accounts************************************
      */
     @Expose
-
     private float orderCost;
     @Expose
-
     private float deliveryCost;
-
     @Expose
-
     public String orderLogJson;
     /*ids de repartidores que cancelaron*/
     @Expose
@@ -83,9 +71,6 @@ public class Order {
     @Expose
     /*true si el repartidor indica que llego al restaurante*/
     public boolean deliveryArrivedToBussines;
-    @Expose
-    /*true si el repartidor indica que llego con el cliente*/
-    public boolean deliveryArrivedToCustomer;
     @Expose
     /*bandera - si la orden esta esperando confirmacion del repartidor, evita que se le asigne otra orden al momento*/
     public boolean waitingDeliveryConfirmation = false;
@@ -153,11 +138,7 @@ public class Order {
             return false;
         }
 
-        if (!isReadyToTake()) {
-            return false;
-        }
-
-        return true;
+        return isReadyToTake();
     }
 
     Timer timer;
@@ -192,22 +173,7 @@ public class Order {
 
     }
 
-    /**
-     * *
-     *
-     * @return true si esta esperando confirmacion, asumiendo que la orden tiene
-     * un repartidor asignado
-     */
-    public boolean isWaitingConfirmation() {
-        return waitingDeliveryConfirmation;
-    }
-
-    /*retorna true si el repartidor confirmo*/
-    public boolean isDeliveryConfirmation() {
-
-        return deliveryConfirmed;
-    }
-
+  
     public void deliveryReject() {
         timer.cancel();
         List<String> add = this.getCancelers();
@@ -227,31 +193,6 @@ public class Order {
 
     }
 
-    public void arrivedTo(String where) {
-
-        switch (where) {
-
-            case AccountType.BUSSINES:
-                this.deliveryArrivedToBussines = true;
-                break;
-
-            case AccountType.CUSTOMER:
-                this.deliveryArrivedToCustomer = true;
-                break;
-        }
-
-    }
-
-    @Deprecated
-    /**
-     * *
-     * Use a OrderControl set Status alternative
-     */
-    public void changeStatusByDelivery(String status) {
-
-        this.setStatus(status);
-
-    }
 
     /**
      * *

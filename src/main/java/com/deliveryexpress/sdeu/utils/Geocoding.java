@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
 
 /***
  * 
@@ -34,15 +36,15 @@ public class Geocoding {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            // Leer la respuesta
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            StringBuilder response;
+            try ( // Leer la respuesta
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String inputLine;
+                response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
             }
-            in.close();
 
             // Convertir respuesta a JSON usando Gson
             JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
@@ -56,8 +58,7 @@ public class Geocoding {
                 direccionFormateada = "No se encontró dirección para estas coordenadas.";
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JsonSyntaxException | IOException e) {
             direccionFormateada = "Error al obtener la dirección: " + e.getMessage();
         }
 
@@ -89,15 +90,15 @@ public class Geocoding {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            // Leer la respuesta
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            StringBuilder response;
+            try ( // Leer la respuesta
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String inputLine;
+                response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
             }
-            in.close();
 
             // Convertir respuesta a JSON usando Gson
             JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
@@ -119,8 +120,7 @@ public class Geocoding {
                 coordenadas = "No se encontraron coordenadas para esta dirección.";
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JsonSyntaxException | IOException e) {
             coordenadas = "Error al obtener las coordenadas: " + e.getMessage();
         }
 
@@ -144,15 +144,15 @@ public class Geocoding {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            // Leer la respuesta
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            StringBuilder response;
+            try ( // Leer la respuesta
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String inputLine;
+                response = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
             }
-            in.close();
 
             // Convertir respuesta a JSON usando Gson
             JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
@@ -174,8 +174,7 @@ public class Geocoding {
                 resultado = "No se pudo calcular la distancia o tiempo entre los puntos.";
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (JsonSyntaxException | IOException e) {
             resultado = "Error al obtener la distancia y tiempo: " + e.getMessage();
         }
 

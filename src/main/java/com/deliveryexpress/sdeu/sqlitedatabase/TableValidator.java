@@ -11,10 +11,7 @@ package com.deliveryexpress.sdeu.sqlitedatabase;
  */
 
 
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.support.ConnectionSource;
-
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -49,7 +46,6 @@ public class TableValidator {
             return classFields.equals(tableColumns);
 
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -66,7 +62,6 @@ public class TableValidator {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -111,7 +106,6 @@ public class TableValidator {
             stmt.execute(sql);
             System.out.println("Columna " + columnName + " agregada a la tabla " + tableName);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     

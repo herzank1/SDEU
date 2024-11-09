@@ -12,7 +12,6 @@ import com.deliveryexpress.sdeu.objects.Moderator;
 import com.deliveryexpress.sdeu.objects.User;
 import com.deliveryexpress.sdeu.objects.contability.BalanceAccount;
 import com.deliveryexpress.sdeu.objects.contability.Transacction;
-import com.deliveryexpress.sdeu.objects.location.Position;
 import com.deliveryexpress.sdeu.objects.metadata.Ratings;
 import com.deliveryexpress.sdeu.objects.metadata.Tags;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
@@ -22,7 +21,10 @@ import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
 import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.newRegisterUser;
 import com.deliveryexpress.sdeu.utils.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,40 +186,43 @@ public class DbBalancer {
 
     }
     
-    public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
+public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
+    try {
+        // Map de clases y sus funciones de actualización
+        Map<String, Consumer<Object>> updateActions = new HashMap<>();
+        updateActions.put(Bussines.class.getName(), obj -> Accounts.Bussiness.Bussiness().update((Bussines) obj));
+        updateActions.put(Delivery.class.getName(), obj -> Accounts.Deliveries.Deliveries().update((Delivery) obj));
+        updateActions.put(Moderator.class.getName(), obj -> Accounts.Moderators.Moderators().update((Moderator) obj));
+        updateActions.put(Customer.class.getName(), obj -> Accounts.Customers.Customers().update((Customer) obj));
+        updateActions.put(User.class.getName(), obj -> Accounts.Users().update((User) obj));
 
-        try {
-            String clazzName = moderatorUpdateObjectCommand.getClazzName();
+        // Obtener el nombre de la clase y la acción de actualización
+        String clazzName = moderatorUpdateObjectCommand.getClazzName();
+        Consumer<Object> updateAction = updateActions.get(clazzName);
 
-            if (clazzName.equals(Bussines.class.getName())) {
-                Bussines deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Bussines.class);
-                Accounts.Bussiness.Bussiness().update(deserializeObject);
-
-            } else if (clazzName.equals(Delivery.class.getName())) {
-
-                Delivery deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Delivery.class);
-                Accounts.Deliveries.Deliveries().update(deserializeObject);
-
-            } else if (clazzName.equals(Moderator.class.getName())) {
-
-                Moderator deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Moderator.class);
-                Accounts.Moderators.Moderators().update(deserializeObject);
-
-            } else if (clazzName.equals(User.class.getName())) {
-
-                User deserializeObject = moderatorUpdateObjectCommand.deserializeObject(User.class);
-                Accounts.Users().update(deserializeObject);
-            }
-
-            return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand,"success",moderatorUpdateObjectCommand.getObject()
-            ,moderatorUpdateObjectCommand.getClass());
-        } catch (Exception e) {
-            e.printStackTrace();
-           return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand,"fail",moderatorUpdateObjectCommand.getObject()
-            ,moderatorUpdateObjectCommand.getClass());
+        if (updateAction != null) {
+            // Deserializar el objeto
+            Object deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Class.forName(clazzName));
+            // Ejecutar la acción de actualización
+            updateAction.accept(deserializeObject);
+            // Responder con éxito
+            return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand, "success", 
+                                                     moderatorUpdateObjectCommand.getObject(), 
+                                                     moderatorUpdateObjectCommand.getClazz());
+        } else {
+            throw new IllegalArgumentException("Clase no soportada: " + clazzName);
         }
 
+    } catch (Exception e) {
+        // Responder con fallo
+        ModeratorUpdateObjectResponse moderatorUpdateObjectResponse = new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand, "fail", 
+                moderatorUpdateObjectCommand.getObject(),
+                moderatorUpdateObjectCommand.getClazz());
+        moderatorUpdateObjectResponse.setMensaje(e.getLocalizedMessage());
+        
+        return moderatorUpdateObjectResponse;
     }
+}
 
     public static class Accounts {
 
@@ -227,6 +232,7 @@ public class DbBalancer {
          * conforme se solicite, asi mismo genera una cuent Balance para
          * administracion de fondos
          *
+         * @param command
          * @param userName
          * @param pass no hashed
          * @param phone
@@ -274,12 +280,25 @@ public class DbBalancer {
             }
             balanceAccount.setBalance(initialBalance);
 
-            Object account = null;
 
             switch (accountType) {
+                
+                    case AccountType.CUSTOMER -> {
+                    Customer customer = new Customer();
+                    customer.setId(UUID.randomUUID().toString());
+                    customer.setName(accountName);
+                    customer.setPhone(user.getPhone());
+                    customer.setAddress(address);
+                    /*ligamos balance a la cuenta*/
+                    customer.setBalanceAccountId(balanceAccount.getId());
+                    /*ligamos cuenta a usuario*/
+                    user.setAccountId(customer.getId());
+                    
+                    
+                  Customers.Customers().create(customer);
+                }
 
-                case AccountType.DELIVERY:
-
+                case AccountType.DELIVERY -> {
                     Delivery delivery = new Delivery();
                     delivery.setId(UUID.randomUUID().toString());
                     delivery.setName(accountName);
@@ -289,14 +308,12 @@ public class DbBalancer {
                     delivery.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(delivery.getId());
-
-                    account = delivery;
-
+                    
+                    
                     Deliveries.Deliveries().create(delivery);
+                }
 
-                    break;
-
-                case AccountType.BUSSINES:
+                case AccountType.BUSSINES -> {
                     if (position == null || position.isEmpty()) {
                         return new Response(command, "fail", "La posición es obligatoria para el tipo de cuenta BUSSINES");
                     }
@@ -311,15 +328,12 @@ public class DbBalancer {
                     bussines.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(bussines.getId());
-
-                    account = bussines;
-
+                    
+                    
                     Bussiness.Bussiness().create(bussines);
+                }
 
-                    break;
-
-                case AccountType.MODERATOR:
-
+                case AccountType.MODERATOR -> {
                     Moderator moderator = new Moderator();
                     moderator.setId(UUID.randomUUID().toString());
                     moderator.setName(accountName);
@@ -329,12 +343,10 @@ public class DbBalancer {
                     moderator.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(moderator.getId());
-
-                    account = moderator;
-
+                    
+                    
                     Moderators.Moderators().create(moderator);
-
-                    break;
+                }
 
             }
 

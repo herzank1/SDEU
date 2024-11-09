@@ -15,13 +15,15 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DeliveryChangeOrderStatusCommand extends Command{
+public class ChangeOrderStatusCommand extends Command{
      @Expose
     String orderId;
       @Expose
     String status;
        @Expose
-    String arrivedTo;
+    String arrivedTo; /*Use only by delivery*/
+             @Expose
+    String reson;
         @Expose
     String position;
     
@@ -30,15 +32,17 @@ public class DeliveryChangeOrderStatusCommand extends Command{
      * @param orderId
      * @param status let arrived null for change order status
      * @param arrivedTo let status null for set ArrivedTo
+     * @param reason
      * @param position 
      */
 
-    public DeliveryChangeOrderStatusCommand(String orderId, String status,String arrivedTo,String position) {
+    public ChangeOrderStatusCommand(String orderId, String status,String arrivedTo,String reason,String position) {
         super();
         super.setCommand("changeOrderStatus");
         this.orderId = orderId;
         this.status = status;
         this.arrivedTo = arrivedTo;
+        this.reson = reson;
         this.position = position;
     }
     

@@ -4,14 +4,12 @@
  */
 package com.deliveryexpress.sdeu.objects.net.socketclient.interfaces;
 
-import com.deliveryexpress.sdeu.objects.net.responses.Response;
-
 /**
  *
  * @author DeliveryExpress
  */
 public interface BussinesResponseListener extends ResponseListener{
     
-      void onNewOrderConfirmation(Response response);
+
     
 }

@@ -11,9 +11,12 @@ import com.deliveryexpress.sdeu.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Data;
@@ -29,7 +32,6 @@ public class SocketClient {
 
   private static OkHttpClient client;
   public static WebSocket webSocket;
-  public static boolean waitingResponse = false;
   public static  String SESSION_ID = "SESSION_ID";
 
   //private static final String SERVER_IP = "ws://192.168.0.7:8080/ws";//Local Host
@@ -39,13 +41,14 @@ public class SocketClient {
   public static Tigger tiger;
 
 
-  public static ConcurrentHashMap<String, CountDownLatch> latchMap = new ConcurrentHashMap<>();
-  public static ConcurrentHashMap<String, JsonObject> responseMap = new ConcurrentHashMap<>();
-
+  public static final ConcurrentHashMap<String, CompletableFuture<JsonObject>> futureMap = new ConcurrentHashMap<>();
+   
 
   /***
    * 
+     * @param sessionId
    * @param serverIp  ws://192.168.0.7:8080/ws  or ws://34.71.89.3:8080/ws
+     * @param tigger
    * @throws Exception 
    */
     public static void init(String sessionId, String serverIp,Tigger tigger) throws Exception {
@@ -89,41 +92,29 @@ public class SocketClient {
         }
     }
 
-  /***
-   * executa un comando y espera la respuesta
-   * @param command comand to send
-   * @param waitMilliseconds waiting time for response
-   * @return
-   */
+  /**
+ * Ejecuta un comando y espera hasta recibir una respuesta o que expire el tiempo de espera.
+ * @param command Comando a enviar
+ * @param waitMilliseconds Tiempo máximo de espera en milisegundos
+ * @return JsonObject que contiene la respuesta, o null si no se recibe a tiempo
+ */
     public static JsonObject execute_R(Command command, long waitMilliseconds) {
+        // Crear un CompletableFuture para manejar la respuesta
+        CompletableFuture<JsonObject> futureResponse = new CompletableFuture<>();
+        futureMap.put(command.getId(), futureResponse);
 
         execute(command);
 
-        // Crear un CountDownLatch para esperar la respuesta
-        CountDownLatch latch = new CountDownLatch(1);
-        latchMap.put(command.getId(), latch);
-
-        // Esperar a que se reciba la respuesta
         try {
-            latch.await(waitMilliseconds, TimeUnit.MILLISECONDS); // Espera hasta 10 segundos
-            if (responseMap.get(command.getId().toString()) != null) {
-
-                return responseMap.get(command.getId().toString());
-            } else {
-
-                return null;
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, "Error esperando respuesta", ex);
-            return null;
+            // Esperar la respuesta o hasta que expire el tiempo
+            return futureResponse.get(waitMilliseconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+            return null; // o lanzar una excepción personalizada si prefieres
         } finally {
-            // Limpiar el mapa después de recibir la respuesta
-            latchMap.remove(command.getId());
-            responseMap.remove(command.getId());
+            // Asegurarse de limpiar el futureMap
+            futureMap.remove(command.getId());
         }
-
     }
-
-
 
 }

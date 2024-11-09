@@ -12,6 +12,7 @@ package com.deliveryexpress.sdeu.objects.orders;
 
     String PREPARANDO = "PREPARANDO";
     String LISTO = "LISTO";
+    /*deliveryArrivedToBussines*/
     String EN_CAMINO = "EN_CAMINO";
     String EN_DOMICILIO = "EN_DOMICILIO";
     String ENTREGADO = "ENTREGADO";

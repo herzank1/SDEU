@@ -4,7 +4,6 @@
  */
 package com.deliveryexpress.sdeu.objects.net.responses;
 
-import com.deliveryexpress.sdeu.objects.Bussines;
 import com.deliveryexpress.sdeu.objects.Customer;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.google.gson.annotations.Expose;

@@ -6,6 +6,7 @@ package com.deliveryexpress.sdeu.objects.net.socketclient;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.concurrent.CompletableFuture;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -35,22 +36,25 @@ public class SocketListener extends WebSocketListener {
         System.out.println("WebSocket Conexión abierta");
     }
 
-    @Override
-    public void onMessage(WebSocket webSocket, String text) {
+   @Override
+public void onMessage(WebSocket webSocket, String text) {
 
-        JsonObject obj = JsonParser.parseString(text).getAsJsonObject();
-        String id = obj.get("id").getAsString();
+    JsonObject obj = JsonParser.parseString(text).getAsJsonObject();
+    String id = obj.get("id").getAsString();
 
-        /*command_R*/
-        if(SocketClient.latchMap.containsKey(id)){
-            SocketClient.responseMap.put(id,obj);
-        }else{
+    /* Verificar si la respuesta corresponde a un comando esperado usando futureMap */
+    CompletableFuture<JsonObject> futureResponse = SocketClient.futureMap.remove(id);
+
+    if (futureResponse != null) {
+        // Completar el future con los datos de la respuesta
+        futureResponse.complete(obj);
+    } else {
+        // Si no es una respuesta esperada, procesar el mensaje en otro componente
         tiger.execute(obj);
-        }
-     
-        System.out.println("WebSocket Mensaje recibido: " + text);
-
     }
+
+    System.out.println("WebSocket Mensaje recibido: " + text);
+}
 
     @Override
     public void onMessage(WebSocket webSocket, ByteString bytes) {
@@ -84,7 +88,6 @@ public class SocketListener extends WebSocketListener {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt(); // Manejo de interrupción
             } catch (Exception e) {
-              e.printStackTrace();
             }
           attempts++;
         }

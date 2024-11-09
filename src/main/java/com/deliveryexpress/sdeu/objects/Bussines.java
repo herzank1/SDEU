@@ -42,7 +42,7 @@ public class Bussines {
        /*Non storable values*/
 
     @Expose
-    private long conected;
+    private boolean conected;
 
     public Bussines() {
          this.id = UUID.randomUUID().toString();
@@ -69,7 +69,9 @@ public class Bussines {
         this.conected = businessFromJson.conected;
     }
     
-    
+      public void switchConected() {
+      this.conected = !this.conected;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     
 }

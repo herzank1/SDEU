@@ -7,12 +7,11 @@ package com.deliveryexpress.sdeu.objects.net.responses;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.orders.Order;
 import com.google.gson.annotations.Expose;
-import java.util.ArrayList;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- *
+ *Respuesta con una orden
  * @author DeliveryExpress
  */
 

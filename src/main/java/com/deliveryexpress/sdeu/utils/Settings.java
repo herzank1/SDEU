@@ -68,8 +68,8 @@ public class Settings {
     // Obtener una propiedad como String
     public static String getString(String key, String defaultValue) {
         Object value = settingsMap.get(key);
-        if (value instanceof String) {
-            return (String) value;
+        if (value instanceof String string) {
+            return string;
         }
         System.out.println("Advertencia: clave no encontrada o tipo no coincide, devolviendo valor por defecto.");
         return defaultValue;
@@ -78,8 +78,8 @@ public class Settings {
     // Obtener una propiedad como Integer
     public static int getInt(String key, int defaultValue) {
         Object value = settingsMap.get(key);
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
+        if (value instanceof Number number) {
+            return number.intValue();
         }
         System.out.println("Advertencia: clave no encontrada o tipo no coincide, devolviendo valor por defecto.");
         return defaultValue;
@@ -88,8 +88,8 @@ public class Settings {
     // Obtener una propiedad como Boolean
     public static boolean getBoolean(String key, boolean defaultValue) {
         Object value = settingsMap.get(key);
-        if (value instanceof Boolean) {
-            return (Boolean) value;
+        if (value instanceof Boolean aBoolean) {
+            return aBoolean;
         }
         System.out.println("Advertencia: clave no encontrada o tipo no coincide, devolviendo valor por defecto.");
         return defaultValue;

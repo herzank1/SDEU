@@ -5,7 +5,6 @@
 package com.deliveryexpress.sdeu.objects.net.socketclient.interfaces;
 
 import com.deliveryexpress.sdeu.objects.net.responses.GetOrderResponse;
-import com.deliveryexpress.sdeu.objects.net.responses.Response;
 
 /**
  *
