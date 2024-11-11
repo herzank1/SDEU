@@ -108,6 +108,9 @@ public class Tigger {
             }
 
             default -> {
+                
+                System.out.println("-----------Default block -----------------");
+                System.out.println("-----------"+obj.get("command").getAsString()+" -----------------");
                 if (brListener != null) {
                     brListener.onResponseReceive(obj);
                 }

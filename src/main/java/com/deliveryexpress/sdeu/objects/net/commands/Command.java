@@ -39,6 +39,7 @@ public class Command {
     public Command() {
         this.id = UUID.randomUUID().toString();
         this.endpoint = EndPoints.DEFAULT;
+        this.command = "default";
 
         params = new ArrayList<>();
     }

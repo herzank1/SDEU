@@ -4,6 +4,7 @@
  */
 package com.deliveryexpress.sdeu.objects.contability;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import java.util.UUID;
 import lombok.Data;
@@ -17,8 +18,10 @@ import lombok.Data;
 public class BalanceAccount {
 
     @DatabaseField(id = true)
+     @Expose
     private String id;
     @DatabaseField
+     @Expose
     private float balance;
 
     public BalanceAccount() {

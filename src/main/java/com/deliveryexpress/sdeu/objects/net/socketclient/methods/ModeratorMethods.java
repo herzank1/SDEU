@@ -106,7 +106,7 @@ public class ModeratorMethods extends DefaultMethods {
         command.setCommand("orderAsigned");
         command.addParam(new Param("oid", orderId));
         command.addParam(new Param("did", deliveryId));
-        JsonObject execute_R = SocketClient.execute_R(command,2000);
+        JsonObject execute_R = SocketClient.execute_R(command,1000*10);
         Response gcResponse = SocketClient.gson.fromJson(execute_R, Response.class);
         return gcResponse;
     }
@@ -115,7 +115,7 @@ public class ModeratorMethods extends DefaultMethods {
 
         BussinesNewOrderCommand command = new BussinesNewOrderCommand(order);
         // Ejecuta el comando en el cliente de socket
-        JsonObject executeR = SocketClient.execute_R(command,2000L);
+        JsonObject executeR = SocketClient.execute_R(command,1000*10);
          GetOrderResponse anoResponse = SocketClient.gson.fromJson(executeR, GetOrderResponse.class);
 
         return anoResponse;
@@ -133,7 +133,7 @@ public class ModeratorMethods extends DefaultMethods {
         ModeratorUpdateOrderCommand command = new ModeratorUpdateOrderCommand(order);
         command.setCommand("updateOrder");
 
-        JsonObject executeR = SocketClient.execute_R(command, 1500L);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         GetOrderResponse muoResponse = SocketClient.gson.fromJson(executeR, GetOrderResponse.class);
 
         return muoResponse;
@@ -169,7 +169,7 @@ public class ModeratorMethods extends DefaultMethods {
        public static GetUsersResponse getUsersFromDb() {
         Command command = new Command();
         command.setCommand("getUsersFromDb");
-        JsonObject execute_R = SocketClient.execute_R(command,2000L);
+        JsonObject execute_R = SocketClient.execute_R(command,1000*10);
         GetUsersResponse guResponse = SocketClient.gson.fromJson(execute_R, GetUsersResponse.class);
 
         return guResponse;
@@ -178,7 +178,7 @@ public class ModeratorMethods extends DefaultMethods {
     public static GetBussinessResponse getBussinesFromDb() {
         Command command = new Command();
         command.setCommand("getBussinesFromDb");
-        JsonObject execute_R = SocketClient.execute_R(command,2000L);
+        JsonObject execute_R = SocketClient.execute_R(command,1000*10);
         GetBussinessResponse gbResponse = SocketClient.gson.fromJson(execute_R, GetBussinessResponse.class);
 
         return gbResponse;
@@ -187,7 +187,7 @@ public class ModeratorMethods extends DefaultMethods {
     public static GetDeliveriesResponse getDeliveriesFromDb() {
         Command command = new Command();
         command.setCommand("getDeliveriesFromDb");
-         JsonObject execute_R = SocketClient.execute_R(command,2000L);
+         JsonObject execute_R = SocketClient.execute_R(command,1000*10);
         GetDeliveriesResponse gdResponse = SocketClient.gson.fromJson(execute_R, GetDeliveriesResponse.class);
 
         return gdResponse;
@@ -197,7 +197,7 @@ public class ModeratorMethods extends DefaultMethods {
 
         Command command = new Command();
         command.setCommand("getCustomersFromDb");
-          JsonObject execute_R = SocketClient.execute_R(command,2000L);
+          JsonObject execute_R = SocketClient.execute_R(command,1000*10);
         GetCustomersResponse gcResponse = SocketClient.gson.fromJson(execute_R, GetCustomersResponse.class);
 
         return gcResponse;
@@ -214,7 +214,7 @@ public class ModeratorMethods extends DefaultMethods {
       public static ModeratorUpdateObjectResponse updateObjectInDb(Object obj, Class clazz) {
 
         ModeratorUpdateObjectCommand command = new ModeratorUpdateObjectCommand(obj,clazz);
-        JsonObject executeR = SocketClient.execute_R(command, 2000);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         ModeratorUpdateObjectResponse muoResponse = SocketClient.gson.fromJson(executeR, ModeratorUpdateObjectResponse.class);
 
         return muoResponse;

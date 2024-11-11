@@ -24,12 +24,6 @@ public interface ResponseListener {
     void onLogginWithSessionIdResponse(GetSessionResponse getSessionResponse);
     
     void onLogginResponse(GetSessionResponse getSessionResponse);
-    
-   // void onMessageReceived();
-    
-   // void onNotificationReceived();
-
-    
-    
+ 
     
 }

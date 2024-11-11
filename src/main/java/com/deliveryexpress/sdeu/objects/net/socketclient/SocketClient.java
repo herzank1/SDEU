@@ -7,6 +7,7 @@ package com.deliveryexpress.sdeu.objects.net.socketclient;
 
 
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
+import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,23 +99,44 @@ public class SocketClient {
  * @param waitMilliseconds Tiempo máximo de espera en milisegundos
  * @return JsonObject que contiene la respuesta, o null si no se recibe a tiempo
  */
-    public static JsonObject execute_R(Command command, long waitMilliseconds) {
-        // Crear un CompletableFuture para manejar la respuesta
-        CompletableFuture<JsonObject> futureResponse = new CompletableFuture<>();
-        futureMap.put(command.getId(), futureResponse);
+ public static JsonObject execute_R(Command command, long waitMilliseconds) {
+    // Crear un CompletableFuture para manejar la respuesta
+    CompletableFuture<JsonObject> futureResponse = new CompletableFuture<>();
+    futureMap.put(command.getId(), futureResponse);
 
-        execute(command);
+    execute(command);
 
+    try {
+        // Esperar la respuesta o hasta que expire el tiempo
+        return futureResponse.get(waitMilliseconds, TimeUnit.MILLISECONDS);
+    } catch (TimeoutException e) {
+        System.out.println("Timeout alcanzado, intentando reintentar...");
+        execute(command); // Intento de reintentar la operación
         try {
-            // Esperar la respuesta o hasta que expire el tiempo
             return futureResponse.get(waitMilliseconds, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-            return null; // o lanzar una excepción personalizada si prefieres
-        } finally {
-            // Asegurarse de limpiar el futureMap
-            futureMap.remove(command.getId());
+        } catch (TimeoutException | InterruptedException | ExecutionException retryException) {
+            retryException.printStackTrace();
+            return nullResponse(); // O maneja el error de manera adecuada
         }
+    } catch (InterruptedException | ExecutionException e) {
+        e.printStackTrace();
+        return nullResponse();
+    } finally {
+        // Asegurarse de limpiar el futureMap
+        futureMap.remove(command.getId());
+    }
+}
+ 
+    private static JsonObject nullResponse() {
+
+        Response response = new Response(new Command(), "fail", null);
+        // Crear un Gson con @Expose habilitado
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        // Convertir el objeto Response a JsonObject
+        JsonObject jsonObject = gson.toJsonTree(response).getAsJsonObject();
+        return jsonObject;
+
     }
 
 }

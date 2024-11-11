@@ -13,5 +13,7 @@ import com.deliveryexpress.sdeu.objects.net.responses.GetOrderResponse;
 public interface DeliveryResponseListener extends ResponseListener{
     
       void onNewOrderReceived(GetOrderResponse getOrderResponse);
+      
+
     
 }

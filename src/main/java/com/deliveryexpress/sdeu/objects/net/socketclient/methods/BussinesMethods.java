@@ -30,7 +30,7 @@ public class BussinesMethods extends DefaultMethods {
 
         BussinesNewOrderCommand command = new BussinesNewOrderCommand(order);
         // Ejecuta el comando en el cliente de socket
-        JsonObject executeR = SocketClient.execute_R(command,2000L);
+        JsonObject executeR = SocketClient.execute_R(command,1000*10);
          GetOrderResponse anoResponse = SocketClient.gson.fromJson(executeR, GetOrderResponse.class);
 
         return anoResponse;
@@ -41,7 +41,7 @@ public class BussinesMethods extends DefaultMethods {
         Command command = new Command();
         command.setCommand("getCustomer");
         command.addParam(new Param("phone", phone));
-        JsonObject executeR = SocketClient.execute_R(command, 1500);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         GetCustomerResponse gcResponse = SocketClient.gson.fromJson(executeR, GetCustomerResponse.class);
 
         return gcResponse;
@@ -52,7 +52,7 @@ public class BussinesMethods extends DefaultMethods {
         Command command = new Command();
         command.setCommand("fetchPlaceSuggestions");
         command.addParam(new Param("input", input));
-        JsonObject executeR = SocketClient.execute_R(command, 250);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
 
         GetFetchPlaceSuggestionsResponse cfsResponse = SocketClient.gson.fromJson(executeR, GetFetchPlaceSuggestionsResponse.class);
 
@@ -64,7 +64,7 @@ public class BussinesMethods extends DefaultMethods {
 
         BussinesCotaizerCommand bcCommand = new BussinesCotaizerCommand(fromAddress, toAddress);
 
-        JsonObject executeR = SocketClient.execute_R(bcCommand, 1500);
+        JsonObject executeR = SocketClient.execute_R(bcCommand, 1000*10);
 
         GetBussinesCotaizerResponse bcResponse = SocketClient.gson.fromJson(executeR, GetBussinesCotaizerResponse.class);
 

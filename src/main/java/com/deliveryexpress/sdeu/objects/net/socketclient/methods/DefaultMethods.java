@@ -62,7 +62,7 @@ public class DefaultMethods {
         Command command = new Command();
         command.setCommand("getBalance");
 
-        JsonObject executeR = SocketClient.execute_R(command, 300);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         GetUserBalanceResponse gubResponse = SocketClient.gson.fromJson(executeR, GetUserBalanceResponse.class);
         return gubResponse;
 
@@ -73,7 +73,7 @@ public class DefaultMethods {
         Command command = new Command();
         command.setCommand("getConnectionStatus");
 
-        JsonObject executeR = SocketClient.execute_R(command, 300);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         Response gcsResponse = SocketClient.gson.fromJson(executeR, Response.class);
         return gcsResponse;
 
@@ -83,7 +83,7 @@ public class DefaultMethods {
         Command command = new Command();
         command.setCommand("switchConnectionStatus");
 
-        JsonObject executeR = SocketClient.execute_R(command, 300);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         Response scsResponse = SocketClient.gson.fromJson(executeR, Response.class);
         return scsResponse;
 
@@ -113,7 +113,7 @@ public class DefaultMethods {
     public static Response changeOrderStatus(String orderId, String status,String arrivedTo,String reason,String position) {
 
         ChangeOrderStatusCommand command = new ChangeOrderStatusCommand(orderId,status,arrivedTo,reason,position);
-        JsonObject executeR = SocketClient.execute_R(command, 1500);
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         Response cosResponse = SocketClient.gson.fromJson(executeR, Response.class);
         return cosResponse;
     }

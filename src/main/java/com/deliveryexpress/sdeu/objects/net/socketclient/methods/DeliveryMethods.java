@@ -36,14 +36,14 @@ public class DeliveryMethods extends DefaultMethods {
     
     public static Response confirmOrder(String orderId) {
         DeliveryOrderConfirmationCommand command = new DeliveryOrderConfirmationCommand(orderId, true);
-        JsonObject execute_R = SocketClient.execute_R(command, 1500);
+        JsonObject execute_R = SocketClient.execute_R(command, 1000*10);
         Response coResponse = SocketClient.gson.fromJson(execute_R, Response.class);
         return coResponse;
     }
 
     public static Response rejectlOrder(String orderId) {
         DeliveryOrderConfirmationCommand command = new DeliveryOrderConfirmationCommand(orderId, false);
-        JsonObject execute_R = SocketClient.execute_R(command, 1500);
+        JsonObject execute_R = SocketClient.execute_R(command, 1000*10);
         Response coResponse = SocketClient.gson.fromJson(execute_R, Response.class);
         return coResponse;
     }
