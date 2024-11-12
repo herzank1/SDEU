@@ -15,6 +15,8 @@ import com.deliveryexpress.sdeu.objects.net.commands.Command;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorNewUserAccountCommand;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
 import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateOrderCommand;
+import com.deliveryexpress.sdeu.objects.net.responses.GetBussinesContractResponse;
+import com.deliveryexpress.sdeu.objects.net.responses.GetBussinessContractsResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetBussinessResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetCustomersResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetDeliveriesResponse;
@@ -219,6 +221,25 @@ public class ModeratorMethods extends DefaultMethods {
 
         return muoResponse;
 
+    }
+      
+    public static GetBussinesContractResponse getBussinesContractFromDb(String bussinesId) {
+        Command command = new Command();
+        command.setCommand("getBussinesContractFromDb");
+        command.addParam(new Param("bussinesId",bussinesId));
+        JsonObject execute_R = SocketClient.execute_R(command, 1000 * 10);
+        GetBussinesContractResponse gbcsResponse = SocketClient.gson.fromJson(execute_R, GetBussinesContractResponse.class);
+
+        return gbcsResponse;
+    }
+
+    public static GetBussinessContractsResponse getBussinessContractsFromDb() {
+        Command command = new Command();
+        command.setCommand("getBussinessContractsFromDb");
+        JsonObject execute_R = SocketClient.execute_R(command, 1000 * 10);
+        GetBussinessContractsResponse gbcsResponse = SocketClient.gson.fromJson(execute_R, GetBussinessContractsResponse.class);
+
+        return gbcsResponse;
     }
 
     

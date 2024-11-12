@@ -11,20 +11,17 @@ import com.deliveryexpress.sdeu.objects.Delivery;
 import com.deliveryexpress.sdeu.objects.Moderator;
 import com.deliveryexpress.sdeu.objects.User;
 import com.deliveryexpress.sdeu.objects.contability.BalanceAccount;
+import com.deliveryexpress.sdeu.objects.contability.BussinesContract;
 import com.deliveryexpress.sdeu.objects.contability.Transacction;
 import com.deliveryexpress.sdeu.objects.metadata.Ratings;
 import com.deliveryexpress.sdeu.objects.metadata.Tags;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
-import com.deliveryexpress.sdeu.objects.net.commands.ModeratorUpdateObjectCommand;
-import com.deliveryexpress.sdeu.objects.net.responses.ModeratorUpdateObjectResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
-import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.newRegisterUser;
+import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.createGenesisAccounts;
+import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Contability.BalancesAccounts.createMainBalancesAccounts;
 import com.deliveryexpress.sdeu.utils.StringUtils;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +48,7 @@ public class DbBalancer {
         contability = new DbConection("db_contability.sqlite");
         contability.addDao(Transacction.class);
         contability.addDao(BalanceAccount.class);
+        contability.addDao(BussinesContract.class);
 
         ordersHistory = new DbConection("db_ordersHistory.sqlite");
         ordersHistory.addDao(StorableOrder.class);
@@ -63,168 +61,120 @@ public class DbBalancer {
         customers.addDao(Customer.class);
 
         createGenesisAccounts();
+        createMainBalancesAccounts();
 
     }
-
-    /*Create genesis account*/
-    public static void createGenesisAccounts() {
-        Command command = new Command();
-        command.setCommand("registerUser");
-        
-     
-      
-        Moderator root = Accounts.Moderators.Moderators().read("root");
-        System.out.println("Verificando root moderator...");
-        if (root == null) {
-            Response newRegisterUser = newRegisterUser(command, "root",
-                     "password",
-                     "6863095448",
-                     AccountType.MODERATOR,
-                     "PowerOverWhelming",
-                     "null",
-                     "null",
-                     1000000f);
-
-            System.out.println("root no existe, se creo uno nuevo. ");
-            System.out.println(newRegisterUser);
-        }
-
-        /*Restaurantes*/
-       
-        Bussines babbq = Accounts.Bussiness.Bussiness().read("abbq");
-        if (babbq == null) {
-            newRegisterUser(command, "abbq",
-                    "password",
-                    "6862644096",
-                    AccountType.BUSSINES,
-                    "La Ahumadera BBQ (San Marcos)",
-                    "P.º de La Rumorosa 403, San Marcos, 21050 Mexicali, B.C.",
-                    "32.63358005891992, -115.49190169316554",
-                    0f);
-        }
-        
-             
-        Bussines bjaz = Accounts.Bussiness.Bussiness().read("jaz");
-        if (bjaz == null) {
-            newRegisterUser(command, "jaz",
-                    "password",
-                    "6863095448",
-                    AccountType.BUSSINES,
-                    "Jugos Aztecas",
-                    "Av San Luis Potosí 3133, Aztecas, 21137 Mexicali, B.C.",
-                    "32.65127507501792, -115.52627820683988",
-                    0f);
-        }
-
-       /*Repartidores*/
-        Delivery dmonge = Accounts.Deliveries.Deliveries().read("alien");
-        if (dmonge == null) {
-            newRegisterUser(command, "alien",
-                    "password",
-                    "6863095448",
-                    AccountType.DELIVERY,
-                    "Diego Monge ",
-                    "null",
-                    "null",
-                    0f);
-        }
-        
-                
-        Delivery dTontin= Accounts.Deliveries.Deliveries().read("tontileon");
-        if (dTontin == null) {
-            newRegisterUser(command, "tontileon",
-                    "password",
-                    "6863093494",
-                    AccountType.DELIVERY,
-                    "Ivan Yanez ",
-                    "null",
-                    "null",
-                    0f);
-        }
-        
-              
-        Delivery dOmar = Accounts.Deliveries.Deliveries().read("elbowser");
-        if (dOmar == null) {
-            newRegisterUser(command, "elbowser",
-                    "password",
-                    "6862544238",
-                    AccountType.DELIVERY,
-                    "Omar Roman ",
-                    "null",
-                    "null",
-                    0f);
-        }
-        
-        /*Clientes*/
-        Customer cmama = Accounts.Customers.Customers().findByColumn("phone", "6861095152");
-        if (cmama == null) {
-
-            cmama = new Customer("Cecy", "6861095152", "av san luis potosi 3129 fracc aztecas", "casa azul");
-            cmama.setPosition("32.65126152498157, -115.5263157576324");
-            Accounts.Customers.Customers().create(cmama);
-        }
-
-        Customer cbubus = Accounts.Customers.Customers().findByColumn("phone", "6863093494");
-        if (cbubus == null) {
-
-            cbubus = new Customer("Ivan yanes", "6863093494", "Revolución 2165, San Luis, 21160 Mexicali, B.C.", "casa");
-            cbubus.setPosition("32.641529170376714, -115.51135359904268");
-            Accounts.Customers.Customers().create(cbubus);
-        }
-
-        Customer comar = Accounts.Customers.Customers().findByColumn("phone", "6862544238");
-        if (comar == null) {
-
-            comar = new Customer("Omar roman", "6862544238", "Sierra San Agustín 2602, Solidaridad INFONAVIT I, 21188 Mexicali, B.C.", "casa");
-            comar.setPosition("32.61953028647941, -115.51635818157561");
-            Accounts.Customers.Customers().create(comar);
-        }
-
-
-          
-          
-
-    }
-    
-public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObjectCommand moderatorUpdateObjectCommand) {
-    try {
-        // Map de clases y sus funciones de actualización
-        Map<String, Consumer<Object>> updateActions = new HashMap<>();
-        updateActions.put(Bussines.class.getName(), obj -> Accounts.Bussiness.Bussiness().update((Bussines) obj));
-        updateActions.put(Delivery.class.getName(), obj -> Accounts.Deliveries.Deliveries().update((Delivery) obj));
-        updateActions.put(Moderator.class.getName(), obj -> Accounts.Moderators.Moderators().update((Moderator) obj));
-        updateActions.put(Customer.class.getName(), obj -> Accounts.Customers.Customers().update((Customer) obj));
-        updateActions.put(User.class.getName(), obj -> Accounts.Users().update((User) obj));
-
-        // Obtener el nombre de la clase y la acción de actualización
-        String clazzName = moderatorUpdateObjectCommand.getClazzName();
-        Consumer<Object> updateAction = updateActions.get(clazzName);
-
-        if (updateAction != null) {
-            // Deserializar el objeto
-            Object deserializeObject = moderatorUpdateObjectCommand.deserializeObject(Class.forName(clazzName));
-            // Ejecutar la acción de actualización
-            updateAction.accept(deserializeObject);
-            // Responder con éxito
-            return new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand, "success", 
-                                                     moderatorUpdateObjectCommand.getObject(), 
-                                                     moderatorUpdateObjectCommand.getClazz());
-        } else {
-            throw new IllegalArgumentException("Clase no soportada: " + clazzName);
-        }
-
-    } catch (Exception e) {
-        // Responder con fallo
-        ModeratorUpdateObjectResponse moderatorUpdateObjectResponse = new ModeratorUpdateObjectResponse(moderatorUpdateObjectCommand, "fail", 
-                moderatorUpdateObjectCommand.getObject(),
-                moderatorUpdateObjectCommand.getClazz());
-        moderatorUpdateObjectResponse.setMensaje(e.getLocalizedMessage());
-        
-        return moderatorUpdateObjectResponse;
-    }
-}
 
     public static class Accounts {
+
+        public static void createGenesisAccounts() {
+            Command command = new Command();
+            command.setCommand("registerUser");
+
+            Moderator root = DbBalancer.Accounts.Moderators.Moderators().read("root");
+            System.out.println("Verificando root moderator...");
+            if (root == null) {
+                Response newRegisterUser = newRegisterUser(command, "root",
+                        "password",
+                        "6863095448",
+                        AccountType.MODERATOR,
+                        "PowerOverWhelming",
+                        "null",
+                        "null",
+                        1000000f);
+
+                System.out.println("root no existe, se creo uno nuevo. ");
+                System.out.println(newRegisterUser);
+            }
+
+            /*Restaurantes*/
+            Bussines babbq = DbBalancer.Accounts.Bussiness.Bussiness().read("abbq");
+            if (babbq == null) {
+                newRegisterUser(command, "abbq",
+                        "password",
+                        "6862644096",
+                        AccountType.BUSSINES,
+                        "La Ahumadera BBQ (San Marcos)",
+                        "P.º de La Rumorosa 403, San Marcos, 21050 Mexicali, B.C.",
+                        "32.63358005891992, -115.49190169316554",
+                        0f);
+            }
+
+            Bussines bjaz = DbBalancer.Accounts.Bussiness.Bussiness().read("jaz");
+            if (bjaz == null) {
+                newRegisterUser(command, "jaz",
+                        "password",
+                        "6863095448",
+                        AccountType.BUSSINES,
+                        "Jugos Aztecas",
+                        "Av San Luis Potosí 3133, Aztecas, 21137 Mexicali, B.C.",
+                        "32.65127507501792, -115.52627820683988",
+                        0f);
+            }
+
+            /*Repartidores*/
+            Delivery dmonge = DbBalancer.Accounts.Deliveries.Deliveries().read("alien");
+            if (dmonge == null) {
+                newRegisterUser(command, "alien",
+                        "password",
+                        "6863095448",
+                        AccountType.DELIVERY,
+                        "Diego Monge ",
+                        "null",
+                        "null",
+                        0f);
+            }
+
+            Delivery dTontin = DbBalancer.Accounts.Deliveries.Deliveries().read("tontileon");
+            if (dTontin == null) {
+                newRegisterUser(command, "tontileon",
+                        "password",
+                        "6863093494",
+                        AccountType.DELIVERY,
+                        "Ivan Yanez ",
+                        "null",
+                        "null",
+                        0f);
+            }
+
+            Delivery dOmar = DbBalancer.Accounts.Deliveries.Deliveries().read("elbowser");
+            if (dOmar == null) {
+                newRegisterUser(command, "elbowser",
+                        "password",
+                        "6862544238",
+                        AccountType.DELIVERY,
+                        "Omar Roman ",
+                        "null",
+                        "null",
+                        0f);
+            }
+
+            /*Clientes*/
+            Customer cmama = DbBalancer.Accounts.Customers.Customers().findByColumn("phone", "6861095152");
+            if (cmama == null) {
+
+                cmama = new Customer("Cecy", "6861095152", "av san luis potosi 3129 fracc aztecas", "casa azul");
+                cmama.setPosition("32.65126152498157, -115.5263157576324");
+                DbBalancer.Accounts.Customers.Customers().create(cmama);
+            }
+
+            Customer cbubus = DbBalancer.Accounts.Customers.Customers().findByColumn("phone", "6863093494");
+            if (cbubus == null) {
+
+                cbubus = new Customer("Ivan yanes", "6863093494", "Revolución 2165, San Luis, 21160 Mexicali, B.C.", "casa");
+                cbubus.setPosition("32.641529170376714, -115.51135359904268");
+                DbBalancer.Accounts.Customers.Customers().create(cbubus);
+            }
+
+            Customer comar = DbBalancer.Accounts.Customers.Customers().findByColumn("phone", "6862544238");
+            if (comar == null) {
+
+                comar = new Customer("Omar roman", "6862544238", "Sierra San Agustín 2602, Solidaridad INFONAVIT I, 21188 Mexicali, B.C.", "casa");
+                comar.setPosition("32.61953028647941, -115.51635818157561");
+                DbBalancer.Accounts.Customers.Customers().create(comar);
+            }
+
+        }
 
         /**
          * *Por el momento no usarse para registrar customer Registra un
@@ -280,10 +230,9 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
             }
             balanceAccount.setBalance(initialBalance);
 
-
             switch (accountType) {
-                
-                    case AccountType.CUSTOMER -> {
+
+                case AccountType.CUSTOMER -> {
                     Customer customer = new Customer();
                     customer.setId(UUID.randomUUID().toString());
                     customer.setName(accountName);
@@ -293,9 +242,8 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
                     customer.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(customer.getId());
-                    
-                    
-                  Customers.Customers().create(customer);
+
+                    Customers.Customers().create(customer);
                 }
 
                 case AccountType.DELIVERY -> {
@@ -308,8 +256,7 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
                     delivery.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(delivery.getId());
-                    
-                    
+
                     Deliveries.Deliveries().create(delivery);
                 }
 
@@ -328,8 +275,7 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
                     bussines.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(bussines.getId());
-                    
-                    
+
                     Bussiness.Bussiness().create(bussines);
                 }
 
@@ -343,8 +289,7 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
                     moderator.setBalanceAccountId(balanceAccount.getId());
                     /*ligamos cuenta a usuario*/
                     user.setAccountId(moderator.getId());
-                    
-                    
+
                     Moderators.Moderators().create(moderator);
                 }
 
@@ -447,8 +392,81 @@ public static ModeratorUpdateObjectResponse updateObjectInDb(ModeratorUpdateObje
     }
 
     public static class Contability {
+        
+        public static class BussinesContracts{
+          /***
+           * 
+           * @param bussinessId
+           * @return bussines contract if not exist create new default
+           */
+            public static BussinesContract getBussinesContract(Bussines bussines) {
+                BussinesContract read = BussinessContracts().read(bussines.getId());
+                if (read != null) {
+                    return read;
+                } else {
+                    read = new BussinesContract(bussines);
+                    BussinessContracts().create(read);
+                    return read;
+
+                }
+            }
+                   
+            
+            public static GenericDao<BussinesContract, String> BussinessContracts() {
+
+                GenericDao<BussinesContract, String> dao = contability.getDao(BussinesContract.class);
+                return dao;
+
+            }
+        
+        }
 
         public static class BalancesAccounts {
+
+            public interface MainBalancesAccountsIDs {
+
+                String CARGO = "@CARGO";
+                String DELIVERY_EXPRESS = "@DELIVERY_EXPRESS";
+                String SERVICIOS_REPARTOS = "@SERVICIOS_REPARTOS";
+                String SERGUROS_ORDENES = "@SERGUROS_ORDENES";
+                String SEGUROS_REPARTIDORES = "@SEGUROS_REPARTIDORES";
+                String CAJA_CHICA = "@CAJA_CHICA";
+                String EMERGENCIAS = "@EMERGENCIAS";
+                String CUOTAS_REPARTIDORES = "@CUOTAS_REPARTIDORES";
+                String CUOTAS_NEGOCIOS = "@CUOTAS_NEGOCIOS";
+
+            }
+
+            public static void createMainBalancesAccounts() {
+
+                BalanceAccount cargos = new BalanceAccount(MainBalancesAccountsIDs.CARGO, 100f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cargos);
+
+                BalanceAccount cuentaPrincipal = new BalanceAccount(MainBalancesAccountsIDs.DELIVERY_EXPRESS, 100f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuentaPrincipal);
+
+                BalanceAccount cuentaServiciosRepartos = new BalanceAccount(MainBalancesAccountsIDs.SERVICIOS_REPARTOS, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuentaServiciosRepartos);
+
+                BalanceAccount cuentaSegurosOrdenes = new BalanceAccount(MainBalancesAccountsIDs.SERGUROS_ORDENES, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuentaSegurosOrdenes);
+
+                BalanceAccount cuentaSegurosRepartidores = new BalanceAccount(MainBalancesAccountsIDs.SEGUROS_REPARTIDORES, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuentaSegurosRepartidores);
+
+                BalanceAccount cajachica = new BalanceAccount(MainBalancesAccountsIDs.CAJA_CHICA, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cajachica);
+
+                BalanceAccount emergencias = new BalanceAccount(MainBalancesAccountsIDs.EMERGENCIAS, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(emergencias);
+
+                BalanceAccount cuotasRepas = new BalanceAccount(MainBalancesAccountsIDs.CUOTAS_REPARTIDORES, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuotasRepas);
+
+                BalanceAccount cuotasBussines = new BalanceAccount(MainBalancesAccountsIDs.CUOTAS_NEGOCIOS, 0f);
+                SQLiteDB.Contability.BalancesAccounts.BalancesAccounts().create(cuotasBussines);
+
+            }
 
             public static GenericDao<BalanceAccount, String> BalancesAccounts() {
 

@@ -7,6 +7,7 @@ package com.deliveryexpress.sdeu.objects.net.socketclient.methods;
 import com.deliveryexpress.sdeu.objects.net.Param;
 import com.deliveryexpress.sdeu.objects.net.commands.ChangeOrderStatusCommand;
 import com.deliveryexpress.sdeu.objects.net.commands.Command;
+import com.deliveryexpress.sdeu.objects.net.responses.GetSystemInfoResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.GetUserBalanceResponse;
 import com.deliveryexpress.sdeu.objects.net.responses.Response;
 import com.deliveryexpress.sdeu.objects.net.socketclient.SocketClient;
@@ -116,6 +117,21 @@ public class DefaultMethods {
         JsonObject executeR = SocketClient.execute_R(command, 1000*10);
         Response cosResponse = SocketClient.gson.fromJson(executeR, Response.class);
         return cosResponse;
+    }
+    
+    /***
+     * 
+     * @return la informacion del servicio de delivery express
+     */
+     public static GetSystemInfoResponse getSystenInfo() {
+
+        Command command = new Command();
+        command.setCommand("getSystemInfo");
+
+        JsonObject executeR = SocketClient.execute_R(command, 1000*10);
+        GetSystemInfoResponse response = SocketClient.gson.fromJson(executeR, GetSystemInfoResponse.class);
+        return response;
+
     }
 
 

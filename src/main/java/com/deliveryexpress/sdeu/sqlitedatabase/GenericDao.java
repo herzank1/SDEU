@@ -9,30 +9,37 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author HP
- * Classe generica para administrar en la base de datos los objetos o classes
+ * @author HP Classe generica para administrar en la base de datos los objetos o
+ * classes
  * @param <T>
  * @param <ID>
  */
 public class GenericDao<T, ID> {
+
     private final Dao<T, ID> dao;
     private final Class clazz;
+    private final Map<ID, T> cache; // Caché para almacenar objetos
 
-    public GenericDao(ConnectionSource connectionSource, Class<T> clazz) throws SQLException{
+    public GenericDao(ConnectionSource connectionSource, Class<T> clazz) throws SQLException {
         this.clazz = clazz;
         dao = DaoManager.createDao(connectionSource, clazz);
-        
+        this.cache = new HashMap<>(); // Inicializamos el caché
+
     }
 
-    /***
+    /**
+     * *
      * Inset entity to database
-     * @param entity 
+     *
+     * @param entity
      */
     public void create(T entity) {
         try {
@@ -42,17 +49,26 @@ public class GenericDao<T, ID> {
         }
     }
 
-    /*select statement*/
     public T read(ID id) {
+        // Busca en el caché primero
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+
+        // Si no está en el caché, buscar en la base de datos
         try {
-            return dao.queryForId(id);
+            T entity = dao.queryForId(id);
+            if (entity != null) {
+                cache.put(id, entity); // Guardar en el caché
+            }
+            return entity;
         } catch (SQLException ex) {
             Logger.getLogger(GenericDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public List<T> readAll()  {
+    public List<T> readAll() {
         try {
             return dao.queryForAll();
         } catch (SQLException ex) {
@@ -62,28 +78,40 @@ public class GenericDao<T, ID> {
     }
 
     /*update statement*/
-    public void update(T entity){
+    public void update(T entity) {
         try {
             dao.update(entity);
+            // Sincronizar el caché: obtener el ID del objeto actualizado
+            ID id = dao.extractId(entity);
+            if (id != null) {
+                cache.put(id, entity); // Actualizar o agregar el objeto al caché
+            }
         } catch (SQLException ex) {
             Logger.getLogger(GenericDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void delete(ID id){
+    public void delete(ID id) {
         try {
             dao.deleteById(id);
+            cache.remove(id); // Eliminar del caché también
         } catch (SQLException ex) {
             Logger.getLogger(GenericDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     // Método genérico para buscar por columna
-    /***
+
+    public void clearCache() {
+        this.cache.clear();
+    }
+
+    // Método genérico para buscar por columna
+    /**
+     * *
      * select where
+     *
      * @param columnName
      * @param value
-     * @return 
+     * @return
      */
     public T findByColumn(String columnName, Object value) {
         try {
@@ -96,14 +124,33 @@ public class GenericDao<T, ID> {
 
     }
 
+    /**
+     * Método genérico para buscar múltiples resultados por una columna
+     *
+     * @param columnName el nombre de la columna
+     * @param value el valor a buscar
+     * @return una lista de objetos que coinciden con la condición
+     */
+    public List<T> findByColumnList(String columnName, Object value) {
+        try {
+            QueryBuilder<T, ID> queryBuilder = dao.queryBuilder();
+            queryBuilder.where().eq(columnName, value); // Agregar la condición de igualdad
+            return queryBuilder.query(); // Devuelve todos los resultados que coinciden
+        } catch (SQLException e) {
+            Logger.getLogger(GenericDao.class.getName()).log(Level.SEVERE, "Error al buscar por columna: " + columnName, e);
+            return null; // Retorna null en caso de error
+        }
+    }
+
     public String getTableName() {
 
         return generateTableNameFromClass(clazz);
 
     }
 
-    /***
-     * 
+    /**
+     * *
+     *
      * @param clazz
      * @return examploe class User return class user as tableName
      */
