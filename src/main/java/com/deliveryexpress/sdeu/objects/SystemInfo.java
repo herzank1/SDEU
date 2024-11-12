@@ -44,9 +44,9 @@ public class SystemInfo {
 
     public interface Codes {
 
-        String C_01 = "Servicio estable";
-        String C_02 = "Alta demanda";
-        String C_03 = "Saturado";
+        String OPTIMO = "OPTIMO";
+        String MODERADO = "MODERADO";
+        String SATURADO = "SATURADO";
 
     }
 

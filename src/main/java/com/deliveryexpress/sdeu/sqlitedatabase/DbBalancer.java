@@ -21,6 +21,7 @@ import com.deliveryexpress.sdeu.objects.orders.StorableOrder;
 import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Accounts.createGenesisAccounts;
 import static com.deliveryexpress.sdeu.sqlitedatabase.DbBalancer.Contability.BalancesAccounts.createMainBalancesAccounts;
 import com.deliveryexpress.sdeu.utils.StringUtils;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -277,6 +278,10 @@ public class DbBalancer {
                     user.setAccountId(bussines.getId());
 
                     Bussiness.Bussiness().create(bussines);
+                    
+                    /*Creamos un contrato default*/
+                    BussinesContract contract = new BussinesContract(bussines);
+                    Contability.BussinesContracts.BussinessContracts().create(contract);
                 }
 
                 case AccountType.MODERATOR -> {
@@ -511,6 +516,12 @@ public class DbBalancer {
     }
 
     public static class OrdersHistory {
+        
+        public static ArrayList<StorableOrder> getHistoryRange(String[] args){
+            
+            return null;
+        
+        }
 
         public static class Orders {
 
